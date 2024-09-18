@@ -1,0 +1,122 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #e0f7f4;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.triangle-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.rectangle {
+    width: 100px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    cursor: pointer;
+    transform-origin: bottom center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, background-color 0.3s, top 0.3s, left 0.3s;
+}
+
+.rectangle:hover {
+    background-color: #4caf50;
+}
+
+.red {
+    background-color: red;
+    transform: rotate(60deg);
+    top: 9%;
+    left: 52%;
+    transform-origin: left center;
+}
+
+.blue {
+    background-color: blue;
+    transform: rotate(0deg);
+    top: 65%;
+    left: 20%;
+    transform-origin: left center;
+}
+
+.green {
+    background-color: green;
+    transform: rotate(-60deg);
+    top: 52.6%;
+    left: 13%;
+    transform-origin: left center;
+}
+
+.form-container {
+    background-color: #dff0d8;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    /* Initially hidden */
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    max-width: 500px;
+    top: 20%;
+}
+
+.form-container.active {
+    display: flex;
+}
+
+.form-container h2 {
+    color: #2e7d32;
+    margin-bottom: 15px;
+}
+
+
+
+.form-container input {
+    width: 100%;
+    /* Make inputs fill the container */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container button {
+    background-color: #2e7d32;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-container button:hover {
+    background-color: #388e3c;
+}
+
+.leaf-icon {
+    width: 50px;
+    height: 50px;
+    margin-top: 10px;
+}
