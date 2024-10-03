@@ -5,6 +5,8 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #e0f7f4;
+    background: linear-gradient(135deg, #e0f7f4, #c3e9ed);
+    font-family: 'Arial', sans-serif;
 }
 
 .main-container {
@@ -18,7 +20,7 @@ body {
 .triangle-container {
     position: relative;
     width: 200px;
-    height: 200px;
+    height: 100px;
 }
 
 .rectangle {
@@ -33,7 +35,7 @@ body {
     position: absolute;
     cursor: pointer;
     transform-origin: bottom center;
-    border-radius: 8px;
+    border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, background-color 0.3s, top 0.3s, left 0.3s;
 }
@@ -44,9 +46,9 @@ body {
 
 .red {
     background-color: red;
-    transform: rotate(60deg);
-    top: 9%;
-    left: 52%;
+    transform: rotate(57deg);
+    top: -35%;
+    left: 49%;
     transform-origin: left center;
 }
 
@@ -60,9 +62,9 @@ body {
 
 .green {
     background-color: green;
-    transform: rotate(-60deg);
-    top: 52.6%;
-    left: 13%;
+    transform: rotate(301deg);
+    top: 51%;
+    left: 12%;
     transform-origin: left center;
 }
 
