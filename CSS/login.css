@@ -4,7 +4,6 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #e0f7f4;
     background: linear-gradient(135deg, #e0f7f4, #c3e9ed);
     font-family: 'Arial', sans-serif;
 }
@@ -15,12 +14,16 @@ body {
     align-items: center;
     justify-content: center;
     gap: 20px;
+    max-width: 600px;
+    width: 100%;
 }
 
 .triangle-container {
     position: relative;
     width: 200px;
     height: 100px;
+    margin-top: 100px;
+
 }
 
 .rectangle {
@@ -30,22 +33,22 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
     position: absolute;
     cursor: pointer;
     transform-origin: bottom center;
     border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s, background-color 0.3s, top 0.3s, left 0.3s;
 }
 
 .rectangle:hover {
-    background-color: #4caf50;
+    background-color: #66bb6a;
 }
 
 .red {
-    background-color: red;
+    background-color: #ef5350;
     transform: rotate(57deg);
     top: -35%;
     left: 49%;
@@ -53,7 +56,7 @@ body {
 }
 
 .blue {
-    background-color: blue;
+    background-color: #42a5f5;
     transform: rotate(0deg);
     top: 65%;
     left: 20%;
@@ -61,7 +64,7 @@ body {
 }
 
 .green {
-    background-color: green;
+    background-color: #66bb6a;
     transform: rotate(301deg);
     top: 51%;
     left: 12%;
@@ -70,25 +73,32 @@ body {
 
 .form-container {
     background-color: #dff0d8;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     display: none;
     /* Initially hidden */
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    max-width: 500px;
+    max-width: 400px;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+    transform: scale(0.95);
+    opacity: 0;
     top: 20%;
 }
 
 .form-container.active {
     display: flex;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .form-container h2 {
     color: #2e7d32;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 24px;
 }
 
 
@@ -99,27 +109,25 @@ body {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px;
     box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3 ease;
 }
 
 .form-container button {
     background-color: #2e7d32;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    margin-left: 42.5%;
+    margin-left: 39%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .form-container button:hover {
     background-color: #388e3c;
-}
-
-.leaf-icon {
-    width: 50px;
-    height: 50px;
-    margin-top: 10px;
+    transform: translateY(-2px);
 }
