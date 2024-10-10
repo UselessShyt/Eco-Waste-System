@@ -17,15 +17,25 @@
 
     aside#sidebar ul li {
         margin-bottom: 10px;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden;
     }
 
     aside#sidebar ul li a {
+        display: block; /* Make the entire <a> fill the <li> */
+        padding: 20px;  /* Space inside the clickable box */
         text-decoration: none;
         color: #333;
         font-weight: bold;
-        margin-left: 25px;
+        margin-left: 0; /* Remove the margin-left to align the text */
+    }
+
+    aside#sidebar ul li:hover {
+        background-color: #418952;
+    }
+
+    aside#sidebar ul li:hover a {
+        color: white; /* Change text color on hover */
     }
 </style>
 
@@ -57,6 +67,5 @@
                 <li><a href="#">Log Out</a></li>
             </ul>
         </div>
-
     </aside>
 </body>
