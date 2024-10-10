@@ -45,47 +45,47 @@
     height: 30px;
     background-color: #418952;
     color: white;
-    padding: 0 20px; /* Create space for the text */
+    padding: 0 20px;
     border-radius: 5px;    
     border-width: 0;
     cursor: pointer;
 }
 
 .reported-issues {
-    height: 200px; /* Set your desired height */
-    overflow-y: auto; /* Enable vertical scrolling */
-    border: 1px solid #ddd; /* Optional: to add a border around the area */
+    height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
     padding: 10px;
   }
   
   .issue {
     padding: 10px 0;
-    border-bottom: 1px solid #eee; /* Optional: to separate issues */
-    cursor: pointer; /* Changes the cursor to indicate it's clickable */
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
   }
   
   .issue-summary {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Align items to the top */
+    align-items: flex-start;
   }
   
   .issue-meta {
-    text-align: right; /* Right-align the status and date */
+    text-align: right;
   }
   
   .status {
-    display: block; /* Ensures the status stays on top */
+    display: block;
     padding: 5px 10px;
     border-radius: 15px;
     font-size: 12px;
     color: #fff;
-    margin-bottom: 5px; /* Space between status and date */
+    margin-bottom: 5px;
   }
   
   .date {
     font-size: 12px;
-    color: #888; /* Optional: lighter color for the date */
+    color: #888;
   }
   
   .status.new {
@@ -97,14 +97,14 @@
   }
   
   .issue-details {
-    display: none; /* Initially hidden */
+    display: none;
     padding: 10px;
-    background-color: #f9f9f9; /* Optional: add a background for detail area */
+    background-color: #f9f9f9;
     margin-top: 10px;
-    border-left: 2px solid #ddd; /* Optional: visual cue for expanded content */
+    border-left: 2px solid #ddd;
   }
   
   .issue.active .issue-details {
-    display: block; /* Shows the details when the issue is clicked */
+    display: block;
   }
   

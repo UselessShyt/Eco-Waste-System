@@ -13,6 +13,8 @@
     background-color: #fff;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    position: sticky;
+    top: 0;
   }
 
   .logo {
