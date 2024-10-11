@@ -9,10 +9,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    height: 12.5vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
     background-color: #fff;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    position: sticky;
+    top: 0;
   }
 
   .logo {
@@ -40,20 +44,21 @@
 </style>
 
 <header>
-    <div class="logo">
-      <div>
-          <img src="../img/logo.png" alt="Eco Waste System">
-      </div>
-      <div id="title">
-          <h1>Eco Waste System</h1>
-      </div>
-    </div>
+  <link rel="icon" href="../img/logo.ico">
+  <div class="logo">
     <div>
-      <h2>Title</h2>
+        <img src="../img/logo.png" alt="Eco Waste System">
     </div>
-    <nav class="user-actions">
-      <a href="#"><img src="../img/notification.png" alt="Notification"></a>
-      <a href="#"><img src="../img/setting.png" alt="Setting"></a>
-      <a href="#"><img src="../img/profile.png" alt="Profile"></a>
-    </nav>
+    <div id="title">
+        <h1>Eco Waste System</h1>
+    </div>
+  </div>
+  <div>
+    <h2>Title</h2>
+  </div>
+  <nav class="user-actions">
+    <a href="#"><img src="../img/notification.png" alt="Notification"></a>
+    <a href="#"><img src="../img/setting.png" alt="Setting"></a>
+    <a href="#"><img src="../img/profile.png" alt="Profile"></a>
+  </nav>
 </header>
