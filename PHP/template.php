@@ -1,6 +1,7 @@
 <?php
     include "header.php";
     include "sidebar.php";
+    include "../SQL_FILE/database.php"
 ?>
 
 <!DOCTYPE html>
