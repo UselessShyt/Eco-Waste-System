@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../CSS/Report-Issues.css">
 </head>
 <body style="margin: 0;">
-    <div style="margin-left: 241px;">
+    <div style="margin-left: 14vw;">
         <div class="container">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <div id="type-c">

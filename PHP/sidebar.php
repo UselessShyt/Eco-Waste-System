@@ -1,10 +1,12 @@
 <style>
     aside#sidebar {
-        width: 200px;
-        padding: 20px;
-        height: 100vh; /* Adjust height as needed */
+        width: 10vw;
+        padding-left: 2vw;
+        padding-right: 2vw;
+        padding-top: 1vh;
+        height: 87.5vh; /* Adjust height as needed */
         position: fixed; /* Keep sidebar fixed */
-        top: 121px;
+        top: 12.5vh;
         left: 0;
         border-right-style: solid;
         border-right-width: 1px;
@@ -23,7 +25,7 @@
 
     aside#sidebar ul li a {
         display: block; /* Make the entire <a> fill the <li> */
-        padding: 20px;  /* Space inside the clickable box */
+        padding: 1vh;  /* Space inside the clickable box */
         text-decoration: none;
         color: #333;
         font-weight: bold;
@@ -41,7 +43,7 @@
 
 <body>
     <aside id="sidebar">
-        <div style="height: 80%;">
+        <div style="height: 85%;">
             <div style="margin-bottom: 50px;">
                 <h3>MAIN MENU</h3>
                 <ul>

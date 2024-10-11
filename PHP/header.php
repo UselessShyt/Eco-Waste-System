@@ -9,7 +9,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    height: 12.5vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
     background-color: #fff;
     border-bottom-style: solid;
     border-bottom-width: 1px;

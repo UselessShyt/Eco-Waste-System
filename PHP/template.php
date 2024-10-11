@@ -11,7 +11,7 @@
     <title>Document</title>
 </head>
 <body style="margin: 0;">
-    <div style="margin-left: 241px;">
+    <div style="margin-left: 14vw;">
         <h1>code here</h1>
     </div>
 </body>
