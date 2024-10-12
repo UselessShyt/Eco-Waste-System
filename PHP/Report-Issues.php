@@ -1,6 +1,7 @@
 <?php
     include "header.php";
     include "sidebar.php";
+    include "../SQL_FILE/database.php";
 ?>
 <script src="../Javascript/Report-Issues.js"></script>
 
@@ -11,11 +12,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Issues</title>
     <link rel="stylesheet" href="../CSS/Report-Issues.css">
+    <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+    </script>
 </head>
 <body style="margin: 0;">
     <div style="margin-left: 14vw;">
         <div class="container">
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="reportForm">
                 <div id="type-c">
                     <label for="type">Type of Issue</label>
                     <select name="dropdown" id="type">
@@ -72,3 +78,20 @@
     </div>
 </body>
 </html>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $type = $_POST['dropdown'];
+  $details = $_POST['details'];
+  if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+    }
+  $sql = "INSERT INTO issue (issue_type, description, issue_Date, user_id) VALUES ('$type', '$details', NOW(), '1')";
+  if ($conn->query($sql)) {
+    echo "<script>alert('Issue reported successfully!');</script>";
+  } else {
+    echo "<script>alert('Error reporting issue. Please try again later.');</script>";
+  }
+}
+$conn->close();
+?>
