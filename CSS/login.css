@@ -132,6 +132,7 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
 }
 
 .form-container button:hover {
@@ -163,6 +164,7 @@ body {
     width: 350px;
     height: 150px;
 }
+
 .input-group {
     margin-bottom: 20px;
 }
@@ -190,9 +192,10 @@ body {
 .options label {
     font-size: 14px;
     width: 200px;
-    
+
 }
-.options label input{
+
+.options label input {
     width: 15px;
     height: 15px;
 }
@@ -203,12 +206,46 @@ body {
     text-decoration: none;
 }
 
-p{
-    height:25px ;
+p {
+    height: 25px;
     text-align: center;
 }
 
-.btn-signin, .btn-create {
+.progress-bar {
+    width: 50%;
+    background-color: #e0e0e0;
+    height: 3px;
+    border-radius: 10px;
+}
+
+
+.progress {
+    height: 100%;
+    width: 0;
+    border-radius: 5px;
+}
+
+.bad {
+    background-color: red;
+}
+
+.normal {
+    background-color: yellow;
+}
+
+.good {
+    background-color: green;
+}
+
+.password-hint {
+    font-size: 14px;
+    text-align: left;
+    height: 20px;
+    width: 300px;
+}
+
+.btn-signin,
+.btn-create {
     display: block;
     width: 100%;
     padding: 10px;
@@ -226,7 +263,8 @@ p{
     background-color: #17a2b8;
 }
 
-.btn-signin:hover, .btn-create:hover {
+.btn-signin:hover,
+.btn-create:hover {
     background-color: #218838;
 }
 
