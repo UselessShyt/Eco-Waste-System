@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Waste System - Schedule Pickup</title>
+    <link rel="stylesheet" href="schedulePickUp.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Eco Waste System</h2>
+            <ul class="menu">
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="#">Schedule Pickup</a></li>
+                <li><a href="#">Pickup History</a></li>
+                <li><a href="#">Report Issues</a></li>
+                <li><a href="#">Generate Reports</a></li>
+                <li class="preferences">Preferences</li>
+                <li><a href="#">Manage Notification</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Help & Center</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1>Schedule Pickup</h1>
+                <div class="user-actions">
+                    <a href="#"><i class="notification-icon"></i></a>
+                    <a href="#"><i class="settings-icon"></i></a>
+                    <a href="#"><img src="user-profile.jpg" alt="User Profile" class="user-profile"></a>
+                </div>
+            </header>
+            <section class="form-section">
+                <div class="tab">
+                    <button class="tablinks active">Schedule Pickup</button>
+                    <button class="tablinks">My Pickups</button>
+                </div>
+                <form class="pickup-form">
+                    <label for="waste-type">Waste Type</label>
+                    <select id="waste-type">
+                        <option value="general">General</option>
+                        <option value="recyclable">Recyclable</option>
+                        <option value="organic">Organic</option>
+                    </select>
+
+                    <label for="quantity">Quantity (kg)</label>
+                    <input type="number" id="quantity" placeholder="0.0">
+
+                    <label for="date">Date to Apply</label>
+                    <input type="date" id="date">
+
+                    <label for="time">Pickup Time</label>
+                    <input type="time" id="time">
+
+                    <div class="form-buttons">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="submit-btn">Submit</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
