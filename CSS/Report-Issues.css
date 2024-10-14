@@ -103,6 +103,10 @@
   .status.in-progress {
     background-color: #e6ccff;
   }
+
+  .status.sloved {
+    background-color: #6d6d6d;
+  }
   
   .issue-details {
     display: none;

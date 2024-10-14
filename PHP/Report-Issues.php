@@ -88,7 +88,37 @@
                                         <p><?php echo $row['address']; ?></p>
                                     </div>
                                     <div class="issue-meta">
-                                        <span class="status new">New</span>
+                                        <?php
+                                            $status = '';
+                                            switch ($row['status']) {
+                                                case 'new':
+                                                    $status = 'status new';
+                                                    break;
+                                                case 'in-progress':
+                                                    $status = 'status in-progress';
+                                                    break;
+                                                case 'Solved':
+                                                    $status = 'status slove';
+                                                    break;
+                                            }
+                                            echo $status
+                                        ?>
+                                        <span class="<?php $status?>">
+                                            <?php
+                                            $status = $row['status'];
+                                            switch ($status) {
+                                                case 'new':
+                                                    echo 'New';
+                                                    break;
+                                                case 'in-progress':
+                                                    echo 'In Progress';
+                                                    break;
+                                                case 'solved':
+                                                    echo 'Solved';
+                                                    break;
+                                            }
+                                            ?>
+                                        </span>
                                         <p class="date"><?php echo $row['issue_Date']; ?></p>
                                     </div>
                                 </div>
@@ -124,7 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
-    $sql = "INSERT INTO issue (issue_type, description, issue_Date, user_id) VALUES ('$type', '$details', NOW(), '1')";
+    $sql = "INSERT INTO issue (issue_type, description, issue_Date, status, user_id) VALUES ('$type', '$details', NOW(), 'New', '1')";
     if ($conn->query($sql)) {
       echo "<script>alert('Issue reported successfully!');</script>";
     } else {
