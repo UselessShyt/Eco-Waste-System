@@ -50,11 +50,11 @@
         <img src="../img/logo.png" alt="Eco Waste System">
     </div>
     <div id="title">
-        <h1>Eco Waste System</h1>
+      <h1 style="padding: 0.5em; color: #418952;">Eco Waste System</h1>
     </div>
   </div>
   <div>
-    <h2>Title</h2>
+    <h2><?php echo $filename; ?></h2>
   </div>
   <nav class="user-actions">
     <a href="#"><img src="../img/notification.png" alt="Notification"></a>

@@ -1,4 +1,5 @@
 <?php
+    $filename = basename(__FILE__);
     include "header.php";
     include "sidebar.php";
     include "../SQL_FILE/database.php";
@@ -27,7 +28,7 @@
                     <select name="dropdown" id="type">
                         <option value="" selected>--- Select a Type ---</option>
                         <option value="operational">Operational Issues</option>
-                        <option value="technicalIssues">Technical Issues</option>
+                        <option value="technical">Technical Issues</option>
                         <option value="environmental">Environmental Issues</option>
                         <option value="other">Other Issues</option>
                     </select>
@@ -41,39 +42,70 @@
         </div>
         <div class="container">
             <h1>My Reported Issues</h1>
-            <div class="reported-issues">
-                <div class="issue" onclick="toggleDetails(this)">
-                    <div class="issue-summary">
-                    <div>
-                        <p><strong>Overflowing Bin</strong></p>
-                        <p>Main Street, near City Hall</p>
-                    </div>
-                    <div class="issue-meta">
-                        <span class="status new">New</span>
-                        <p class="date">Reported on 28th Sept, 2024</p>
-                    </div>
-                    </div>
-                    <div class="issue-details">
-                    <p>Details: The bin has not been emptied for 3 days and is overflowing with waste, causing foul smell.</p>
-                    </div>
-                </div>
+            <?php
+                // Fetch data from the table (replace with your actual query)
+                $user_id = 1;
+                $query = "
+                    SELECT i.*, u.address AS address
+                    FROM issue i
+                    JOIN users u ON i.user_id = u.User_ID
+                    WHERE i.user_id = $user_id
+                ";
 
-                <div class="issue" onclick="toggleDetails(this)">
-                    <div class="issue-summary">
-                    <div>
-                        <p><strong>Littering</strong></p>
-                        <p>Central Market, near Pasar Seni</p>
-                    </div>
-                    <div class="issue-meta">
-                        <span class="status in-progress">In Progress</span>
-                        <p class="date">Reported on 28th Sept, 2024</p>
-                    </div>
-                    </div>
-                    <div class="issue-details">
-                    <p>Details: Frequent littering reported in the area. Trash bins are available but not being used properly.</p>
-                    </div>
-                </div>
-            </div>
+                $result = $conn->query($query);
+
+                // Check if there are any results
+                if ($result->num_rows > 0) {
+                    // Get the number of rows to display
+                    $rows_to_display = min(10, $result->num_rows); // Display up to 10 issues
+
+                    // Loop through the results and create a div for each issue
+                    for ($i = 0; $i < $rows_to_display; $i++) {
+                        $row = $result->fetch_assoc();
+                        ?>
+                        <div class="reported-issues">
+                            <div class="issue" onclick="toggleDetails(this)">
+                                <div class="issue-summary">
+                                    <div>
+                                        <?php
+                                            $issuetype = "";
+                                            switch ($row['issue_type']) {
+                                            case 'operational':
+                                                $issuetype = "Operational Issue";
+                                                break;
+                                            case 'technical':
+                                                $issuetype = "Technical Issues";
+                                                break;
+                                            case 'environmental':
+                                                $issuetype = 'Environmental Issues';
+                                                break;
+                                            case 'other':
+                                                $issuetype = 'Other Issues';
+                                                break;
+                                            }
+                                        ?>
+                                        <p><strong><?php echo $issuetype; ?></strong></p>
+                                        <p><?php echo $row['address']; ?></p>
+                                    </div>
+                                    <div class="issue-meta">
+                                        <span class="status new">New</span>
+                                        <p class="date"><?php echo $row['issue_Date']; ?></p>
+                                    </div>
+                                </div>
+                                <div class="issue-details">
+                                    <p><?php echo $row['Description']; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    // Display a message if there are no issues
+                    ?>
+                    <p>No reported issues.</p>
+                    <?php
+                }
+                ?>
         </div>
     </div>
 </body>
@@ -83,14 +115,21 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $type = $_POST['dropdown'];
   $details = $_POST['details'];
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-    }
-  $sql = "INSERT INTO issue (issue_type, description, issue_Date, user_id) VALUES ('$type', '$details', NOW(), '1')";
-  if ($conn->query($sql)) {
-    echo "<script>alert('Issue reported successfully!');</script>";
+
+  if (empty($type)) {
+    echo "<script>alert('Please select Type of Issue');</script>";
+  } elseif (empty($details)) {
+    echo "<script>alert('Details cannot be empty!');</script>";
   } else {
-    echo "<script>alert('Error reporting issue. Please try again later.');</script>";
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+    $sql = "INSERT INTO issue (issue_type, description, issue_Date, user_id) VALUES ('$type', '$details', NOW(), '1')";
+    if ($conn->query($sql)) {
+      echo "<script>alert('Issue reported successfully!');</script>";
+    } else {
+      echo "<script>alert('Error reporting issue. Please try again later.');</script>";
+    }
   }
 }
 $conn->close();

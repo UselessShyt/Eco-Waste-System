@@ -1,5 +1,13 @@
 .container {
-    margin: 4em;
+    margin-top: 3vh;
+    margin-left: 3vw;
+    margin-right: 3vw;
+    padding-right: 2vw;
+    padding-left: 2vw;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    border-radius: 2em;
+    background-color: #f8f9fa;
 }
 
 #type-c{
@@ -52,10 +60,10 @@
 }
 
 .reported-issues {
-    height: 40vh;
     overflow-y: auto;
     border: 1px solid #ddd;
     padding: 10px;
+    background-color: white;
   }
   
   .issue {
