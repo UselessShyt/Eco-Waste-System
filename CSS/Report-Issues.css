@@ -96,16 +96,34 @@
     color: #888;
   }
   
-  .status.new {
+  #status.new {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
     background-color: #cce6ff;
   }
   
-  .status.in-progress {
-    background-color: #e6ccff;
+  #status.in-progress {
+        display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    background-color: #ff0000;
   }
 
-  .status.sloved {
-    background-color: #6d6d6d;
+  #solved {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    background-color: #e6ccff;
   }
   
   .issue-details {

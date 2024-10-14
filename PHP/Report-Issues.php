@@ -91,19 +91,18 @@
                                         <?php
                                             $status = '';
                                             switch ($row['status']) {
-                                                case 'new':
-                                                    $status = 'status new';
+                                                case 'New':
+                                                    $status = 'new';
                                                     break;
                                                 case 'in-progress':
-                                                    $status = 'status in-progress';
+                                                    $status = 'in-progress';
                                                     break;
                                                 case 'Solved':
-                                                    $status = 'status slove';
+                                                    $status = 'solved';
                                                     break;
                                             }
-                                            echo $status
                                         ?>
-                                        <span class="<?php $status?>">
+                                        <span id="<?php echo $status?>">
                                             <?php
                                             $status = $row['status'];
                                             switch ($status) {
@@ -113,7 +112,7 @@
                                                 case 'in-progress':
                                                     echo 'In Progress';
                                                     break;
-                                                case 'solved':
+                                                case 'Solved':
                                                     echo 'Solved';
                                                     break;
                                             }
