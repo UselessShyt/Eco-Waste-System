@@ -21,6 +21,8 @@ require '../PHPMailer-master/src/Exception.php';
 require '../PHPMailer-master/src/PHPMailer.php';
 require '../PHPMailer-master/src/SMTP.php';
 
+session_start(); // Start a new PHP session
+
 // Initialize error messages
 $email_error = $address_error = $community_error = $password_error = $general_error = "";
 $error_flag = false; // Flag to check for any errors
@@ -156,8 +158,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verify password
             if (password_verify($password, $row['password'])) {
                 echo "Login successful!";
-                header('Location: template.php');  // Redirect to dashboard or another page
-                exit();
+                header('Location: dashboard.php');  // Redirect to dashboard or another page
+                $_SESSION['User_ID'] = $row['User_ID']; // Save the User ID in the session
             } else {
                 echo "Incorrect password!";
             }
