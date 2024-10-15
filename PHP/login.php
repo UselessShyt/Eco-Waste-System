@@ -13,105 +13,108 @@ if ($conn->connect_error)
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST")
-{
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname = mysqli_real_escape_string($conn, $_POST["fullname"]);
     $email = mysqli_real_escape_string($conn, $_POST["email"]);
     $age = mysqli_real_escape_string($conn, $_POST["age"]);
-    $password = mysqli_real_escape_string($conn, $_POST["password"]);
     $phone = mysqli_real_escape_string($conn, $_POST["phone"]);
     $address = mysqli_real_escape_string($conn, $_POST["address"]);
     $community = mysqli_real_escape_string($conn, $_POST["community"]);
 
-    if (strlen($password) < 8 || 
-        !preg_match('/[A-Z]/', $password) || 
-        !preg_match('/[a-z]/', $password) || 
-        !preg_match('/[0-9]/', $password) || 
-        !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
-        echo "Password does not meet the strength requirements.";
-        exit();
-    }
-
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // Generate a random password (8 characters with letters, numbers, and symbols)
+    $generated_password = bin2hex(random_bytes(4)); // Example: "8c1f2b4a"
+    
+    // Alternatively, you can include more complexity:
+    // $generated_password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'), 0, 8);
+    
+    $hashed_password = password_hash($generated_password, PASSWORD_DEFAULT);
 
     // Detect role based on the name prefix
-    if (strpos($fullname, "ADMIN") === 0)
-    {
+    if (strpos($fullname, "ADMIN") === 0) {
         $role = "ADMIN";
 
         // Admins can create new communities
-        if (!empty($community))
-        {
-            // Check if the community already exists
+        if (!empty($community)) {
             $check_community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
             $check_result = $conn->query($check_community_query);
 
-            if ($check_result->num_rows > 0)
-            {
+            if ($check_result->num_rows > 0) {
                 echo "Error: Community already exists.";
-                exit(); // Stop further processing
-            }
-            else
-            {
-                // If community does not exist, create it
+                exit();
+            } else {
                 $create_community_query = "INSERT INTO Community (Area) VALUES ('$community')";
-                if ($conn->query($create_community_query) === TRUE)
-                {
-                    $community_id = $conn->insert_id; // Get the newly created community ID
-                }
-                else
-                {
+                if ($conn->query($create_community_query) === TRUE) {
+                    $community_id = $conn->insert_id;
+                } else {
                     echo "Error creating community: " . $conn->error;
                     exit();
                 }
             }
-        }
-        else
-        {
+        } else {
             echo "Admin must create a community.";
             exit();
         }
-    }
-    else
-    {
+    } else {
         $role = "USER";
-
-        // Check if community exists for users
-        if (!empty($community))
-        {
+        if (!empty($community)) {
             $community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
             $community_result = $conn->query($community_query);
 
-            if ($community_result->num_rows > 0)
-            {
+            if ($community_result->num_rows > 0) {
                 $row = $community_result->fetch_assoc();
                 $community_id = $row['Com_Id'];
-            }
-            else
-            {
+            } else {
                 echo "Community not found. You can register without a community.";
-                $community_id = NULL; // Community will be NULL if not found
+                $community_id = NULL;
             }
-        }
-        else
-        {
-            $community_id = NULL; // No community provided
+        } else {
+            $community_id = NULL;
         }
     }
 
     // Insert user details into the users table
     $sql = "INSERT INTO users (name, email, phone, address, age, role, com_id, password)
-            VALUES ('$fullname', '$email', '$phone', '$address', '$age', '$role'," . ($community_id ? $community_id : "NULL") . ", '$password')";
+            VALUES ('$fullname', '$email', '$phone', '$address', '$age', '$role'," . ($community_id ? $community_id : "NULL") . ", '$hashed_password')";
 
-    if ($conn->query($sql) === TRUE)
-    {
-        echo "Registration Successful!";
-        header('Location: ManageAccount.php');
-        exit();
-    }
-    else
-    {
+    if ($conn->query($sql) === TRUE) {
+        // Send the password to the user's email
+        $subject = "Your Account Password";
+        $message = "Hello $fullname, your account has been created successfully. Here is your password: $generated_password. Please log in and change it.";
+        $headers = "From: no-reply@ecowaste.com";
+
+        if (mail($email, $subject, $message, $headers)) {
+            echo "Registration Successful! Check your email for the password.";
+            header('Location: ManageAccount.php');
+            exit();
+        } else {
+            echo "Registration successful, but failed to send the email.";
+        }
+    } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
+    $email = mysqli_real_escape_string($conn, $_POST["email"]);
+    $password = mysqli_real_escape_string($conn, $_POST["password"]);
+
+    // Check if the user exists
+    $sql = "SELECT * FROM users WHERE email='$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        // Verify password
+        if (password_verify($password, $row['password'])) {
+            echo "Login successful!";
+            header('Location: Guest.php'); // Redirect to dashboard or another page
+            exit();
+        } else {
+            echo "Incorrect password!";
+        }
+    } else {
+        echo "Account not found. Please register first.";
     }
 }
 
@@ -145,6 +148,7 @@ $conn->close();
                     <h1>Eco Waste System</h1>
                 </div>
                 <form class="login-form" method="POST" action="login.php">
+                    <input type="hidden" name="login" value="1"> <!-- Hidden input to indicate login -->
                     <div class="input-group">
                         <label for="email">Your email</label>
                         <input type="email" id="email" name="email" placeholder="Enter your email" required>
@@ -159,7 +163,7 @@ $conn->close();
                     </div>
                     <button type="submit" class="btn-signin">Sign In</button>
                     <p>———————— &nbsp;&nbsp;&nbsp;&nbsp; OR &nbsp;&nbsp;&nbsp;&nbsp; ————————</p>
-                    <a href="login.php" class="btn-create">Create an account</a>
+                    <a href="#" class="btn-create">Create an account</a>
                 </form>
             </div>
         </div>
@@ -168,6 +172,7 @@ $conn->close();
         <div id="register-form" class="form-container">
             <h2>Register</h2>
             <form method="POST" action="login.php">
+                <input type="hidden" name="register" value="1"> <!-- Hidden input to indicate registration -->
                 <input type="text" name="fullname" placeholder="Full Name" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="age" name="age" placeholder="Age" required>
