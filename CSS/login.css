@@ -1,10 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #e0f7f4;
+    min-height: 100vh;
+    background-image: url(../Image/login_BG.png);
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
 }
 
 .main-container {
@@ -13,12 +22,16 @@ body {
     align-items: center;
     justify-content: center;
     gap: 20px;
+    max-width: 600px;
+    width: 100%;
 }
 
 .triangle-container {
     position: relative;
     width: 200px;
-    height: 200px;
+    height: 100px;
+    margin-top: 100px;
+
 }
 
 .rectangle {
@@ -28,30 +41,30 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
     position: absolute;
     cursor: pointer;
     transform-origin: bottom center;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s, background-color 0.3s, top 0.3s, left 0.3s;
 }
 
 .rectangle:hover {
-    background-color: #4caf50;
+    background-color: #66bb6a;
 }
 
 .red {
-    background-color: red;
-    transform: rotate(60deg);
-    top: 9%;
-    left: 52%;
+    background-color: #ef5350;
+    transform: rotate(57deg);
+    top: -35%;
+    left: 49%;
     transform-origin: left center;
 }
 
 .blue {
-    background-color: blue;
+    background-color: #42a5f5;
     transform: rotate(0deg);
     top: 65%;
     left: 20%;
@@ -59,65 +72,195 @@ body {
 }
 
 .green {
-    background-color: green;
-    transform: rotate(-60deg);
-    top: 52.6%;
-    left: 13%;
+    background-color: #66bb6a;
+    transform: rotate(301deg);
+    top: 51%;
+    left: 12%;
     transform-origin: left center;
 }
 
 .form-container {
-    background-color: #dff0d8;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
     display: none;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     /* Initially hidden */
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    max-width: 500px;
+    max-width: 400px;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+    transform: scale(0.95);
+    opacity: 0;
     top: 20%;
 }
 
 .form-container.active {
     display: flex;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .form-container h2 {
     color: #2e7d32;
-    margin-bottom: 15px;
-}
-
-
-
-.form-container input {
-    width: 100%;
-    /* Make inputs fill the container */
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+    margin-bottom: 20px;
+    font-size: 24px;
 }
 
 .form-container button {
     background-color: #2e7d32;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    margin-left: 42.5%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
 }
 
 .form-container button:hover {
     background-color: #388e3c;
+    transform: translateY(-2px);
 }
 
-.leaf-icon {
-    width: 50px;
-    height: 50px;
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.login-box {
+    flex: 1;
+}
+
+.logo h1 {
+    margin-bottom: 20px;
+    color: #28a745;
+    text-align: center;
+}
+
+.logo img {
+    width: 350px;
+    height: 150px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.options label {
+    font-size: 14px;
+    width: 200px;
+
+}
+
+.options label input {
+    width: 15px;
+    height: 15px;
+}
+
+.options a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+p {
+    height: 25px;
+    text-align: center;
+}
+.error-message {
+    color: red;
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+}
+
+.general-message {
+    color: red;
+    font-size: 14px;
     margin-top: 10px;
+}
+
+
+.btn-signin,
+.btn-create {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.btn-create {
+    background-color: #17a2b8;
+}
+
+.btn-signin:hover,
+.btn-create:hover {
+    background-color: #218838;
+}
+
+.image-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8f5e9;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .image-box {
+        display: none;
+    }
 }
