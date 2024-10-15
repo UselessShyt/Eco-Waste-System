@@ -176,7 +176,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/login.css?v=2.0">
+    <link rel="stylesheet" href="../CSS/login.css">
     <title>Recycling Triangle</title>
     <script>
         // Use PHP to output a JavaScript variable that indicates whether the user should stay on the registration form

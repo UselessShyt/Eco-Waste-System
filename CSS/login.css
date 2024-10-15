@@ -109,20 +109,6 @@ body {
     font-size: 24px;
 }
 
-
-
-.form-container input {
-    width: 100%;
-    /* Make inputs fill the container */
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3 ease;
-}
-
 .form-container button {
     background-color: #2e7d32;
     color: white;
