@@ -68,47 +68,30 @@ guest.addEventListener("click", () => {
     window.location.href = "Guest.html";
 });
 
-const passwordInput = document.getElementById("password-register");
-const progressBar = document.getElementById("progress-bar");
-const passwordHint = document.getElementById("password-hint");
+function validateForm() {
+    const fullName = document.querySelector('input[name="fullname"]').value;
+    const phone = document.querySelector('input[name="phone"]').value;
 
-passwordInput.addEventListener("input", function () {
-    const password = passwordInput.value;
-    const strength = evaluatePasswordStrength(password);
-
-    // Update progress bar and hint based on password strength
-    if (strength === 'bad') {
-        progressBar.style.width = '33%';
-        progressBar.className = 'progress bad';
-        passwordHint.textContent = 'Password strength: Bad';
-    } else if (strength === 'normal') {
-        progressBar.style.width = '66%';
-        progressBar.className = 'progress normal';
-        passwordHint.textContent = 'Password strength: Normal';
-    } else if (strength === 'good') {
-        progressBar.style.width = '100%';
-        progressBar.className = 'progress good';
-        passwordHint.textContent = 'Password strength: Good';
-    }
-});
-
-function evaluatePasswordStrength(password) {
-    let strength = 'bad';
-
-    // Define password strength criteria
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const isLongEnough = password.length >= 8;
-
-    // Calculate password strength
-    if (isLongEnough && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars) {
-        strength = 'good';
-    } else if (isLongEnough && (hasUpperCase || hasLowerCase) && (hasNumbers || hasSpecialChars)) {
-        strength = 'normal';
+    // Regex to match only English letters and spaces for full name
+    const fullNameRegex = /^[a-zA-Z\s]+$/;
+    if (!fullNameRegex.test(fullName)) {
+        alert("Full name must contain only letters and spaces.");
+        return false;
     }
 
-    return strength;
+    // Regex to match only digits for phone number
+    const phoneRegex = /^\d+$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Phone number must contain only digits.");
+        return false;
+    }
+
+    return true; // Form is valid
 }
+
+if (typeof showRegisterForm !== 'undefined' && showRegisterForm) {
+    document.getElementById("login-form").classList.remove("active");
+    document.getElementById("register-form").classList.add("active");
+}
+
 
