@@ -30,7 +30,20 @@ $user_id = $_SESSION['User_ID'];
   }
 
   .logo img {
-    max-height: 5em;
+    height: 7.5vh;
+  }
+
+  .title{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-left: 1vw;
+    padding-right: 1vw;
+  }
+
+  .title h1{
+    padding: 1vh;
+    color: #418952;
   }
 
   .user-actions {
@@ -44,7 +57,7 @@ $user_id = $_SESSION['User_ID'];
   }
 
   .user-actions a img{
-      max-height: 50px;
+      height: 5vh;
   }
 </style>
 
@@ -52,14 +65,25 @@ $user_id = $_SESSION['User_ID'];
   <link rel="icon" href="../img/logo.ico">
   <div class="logo">
     <div>
-        <img src="../img/logo.png" alt="Eco Waste System">
+        <img src="../img/logo.png" alt="Eco Waste System logo">
     </div>
-    <div id="title">
-      <h1 style="padding: 0.5em; color: #418952;">Eco Waste System</h1>
+    <div class="title">
+      <h1>Eco Waste System</h1>
     </div>
   </div>
   <div>
-    <h2><?php echo $filename; ?></h2>
+    <h2>
+      <?php
+        switch ($filename){
+          case 'Report-Issues.php':
+            echo'Report Issue';
+            break;
+          case 'dashboard.php':
+            echo 'Dashboard';
+            break;
+        }
+      ?>
+    </h2>
   </div>
   <nav class="user-actions">
     <a href="#"><img src="../img/notification.png" alt="Notification"></a>
