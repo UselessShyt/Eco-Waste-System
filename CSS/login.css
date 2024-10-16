@@ -203,11 +203,20 @@ p {
     margin-top: 5px;
 }
 
+.error-message-login {
+    color: red;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
 .general-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
 }
+
 
 
 .btn-signin,
