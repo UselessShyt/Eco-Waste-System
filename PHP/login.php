@@ -1,4 +1,7 @@
+
 <?php
+session_start();
+
 //Database connection
 $servername = "localhost";
 $username = "root";
@@ -193,6 +196,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             // Verify password
             if ($password === $row['password'])
             {
+                $_SESSION['User_ID'] = $row['User_ID'];
+
                 // Set cookies before outputting any HTML
                 if ($remember)
                 {
@@ -212,10 +217,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 }
 
                 // Redirect or output success message
+                
                 echo "Login successful!";
-                session_start();
-                $user_id = $_SESSION['User_ID'];
-                header('Location: dashboard.php');  // Redirect to dashboard or another page
+                header('Location: dashboard.php'); 
                 exit();
             }
             else
@@ -319,7 +323,7 @@ $conn->close();
         <div id="login-form" class="form-container active">
             <div class="login-box">
                 <div class="logo">
-                    <img src="../Image/logo.png" alt="Eco Waste System Logo">
+                    <img src="../Img/logo.png" alt="Eco Waste System Logo">
                     <h1>Eco Waste System</h1>
                 </div>
                 <form class="login-form" method="POST" action="login.php">
