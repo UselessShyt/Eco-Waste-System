@@ -1,4 +1,5 @@
 <?php
+    $filename = basename(__FILE__);
     include "header.php";
     include "sidebar.php";
     include "../SQL_FILE/database.php"

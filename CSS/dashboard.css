@@ -1,0 +1,39 @@
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    height: 80.5vh;
+    width: 84vw;
+    gap: 5vh 1vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 2.5vh;
+}
+
+.image-item {
+    position: relative;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+}
+
+.image {
+    display: flex;
+    justify-content: center;
+    width: 10vw; /* You can adjust the size */
+    height: 20vh;
+    object-fit: contain;
+    border: 2px solid black;
+    padding: 5vh;
+    border-radius: 30px
+}
+
+.label {
+    position: absolute; /* Set the text to be positioned relative to its parent */
+    bottom: 0; /* Position it at the bottom of the container */
+    left: 50%; /* Center it horizontally within the image */
+    transform: translateX(-50%); /* Adjust for any potential padding or margin on the right side */
+    font-size: 16px;
+    color: #333;
+}
