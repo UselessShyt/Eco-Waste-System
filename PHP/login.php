@@ -213,7 +213,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
                 // Redirect or output success message
                 echo "Login successful!";
-                header('Location: template.php');  // Redirect to dashboard or another page
+                session_start();
+                $user_id = $_SESSION['User_ID'];
+                header('Location: dashboard.php');  // Redirect to dashboard or another page
                 exit();
             }
             else
@@ -353,7 +355,8 @@ $conn->close();
                     <!-- Hidden input to indicate registration -->
                     <div class="input-group">
                         <label for="reset-email"></label>
-                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email" required>
+                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email"
+                            required>
                     </div>
                     <div class="button-container">
                         <button type="submit" class="btn-reset-password">Submit</button>
