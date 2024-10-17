@@ -47,10 +47,10 @@
             <div style="margin-bottom: 50px;">
                 <h3>MAIN MENU</h3>
                 <ul>
-                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="dashboard.php">Dashboard</a></li>
                     <li><a href="#">Schedule Pickup</a></li>
                     <li><a href="#">Pickup History</a></li>
-                    <li><a href="#">Report Issues</a></li>
+                    <li><a href="Report-Issues.php">Report Issues</a></li>
                     <li><a href="#">Generate Reports</a></li>
                 </ul>
             </div>
@@ -66,7 +66,7 @@
         </div>
         <div>
             <ul>
-                <li><a href="#">Log Out</a></li>
+                <li><a href="login.php">Log Out</a></li>
             </ul>
         </div>
     </aside>

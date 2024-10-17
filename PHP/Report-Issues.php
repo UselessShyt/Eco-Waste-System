@@ -44,7 +44,6 @@
             <h1>My Reported Issues</h1>
             <?php
                 // Fetch data from the table (replace with your actual query)
-                $user_id = 1;
                 $query = "
                     SELECT i.*, u.address AS address
                     FROM issue i
@@ -91,13 +90,13 @@
                                         <?php
                                             $status = '';
                                             switch ($row['status']) {
-                                                case 'New':
+                                                case 'new':
                                                     $status = 'new';
                                                     break;
                                                 case 'in-progress':
                                                     $status = 'in-progress';
                                                     break;
-                                                case 'Solved':
+                                                case 'solved':
                                                     $status = 'solved';
                                                     break;
                                             }
@@ -112,7 +111,7 @@
                                                 case 'in-progress':
                                                     echo 'In Progress';
                                                     break;
-                                                case 'Solved':
+                                                case 'solved':
                                                     echo 'Solved';
                                                     break;
                                             }
@@ -153,7 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
-    $sql = "INSERT INTO issue (issue_type, description, issue_Date, status, user_id) VALUES ('$type', '$details', NOW(), 'New', '1')";
+    $sql = "INSERT INTO issue (issue_type, description, issue_Date, status, user_id) VALUES ('$type', '$details', NOW(), 'new', '$user_id')";
     if ($conn->query($sql)) {
       echo "<script>alert('Issue reported successfully!');</script>";
     } else {
