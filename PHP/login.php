@@ -198,7 +198,7 @@ $conn->close();
         <div id="login-form" class="form-container active">
             <div class="login-box">
                 <div class="logo">
-                    <img src="../Image/logo.png" alt="Eco Waste System Logo">
+                    <img src="../Img/logo.png" alt="Eco Waste System Logo">
                     <h1>Eco Waste System</h1>
                 </div>
                 <form class="login-form" method="POST" action="login.php">
