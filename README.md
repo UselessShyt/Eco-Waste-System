@@ -48,9 +48,3 @@ Reports: Generate and download reports from the "Generate Reports" section.
 
 Database
 The system is powered by a MySQL database named ecodatabase. Ensure that you import the correct database schema from the ecodatabase.sql file, and configure the database connection in your PHP code.
-
-Contributing
-Feel free to fork the project and submit pull requests. All contributions are welcome, including feature enhancements, bug fixes, or suggestions for improvement.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for more details.
