@@ -66,7 +66,7 @@
         </div>
         <div>
             <ul>
-                <li><a href="#">Log Out</a></li>
+                <li><a href="login.php">Log Out</a></li>
             </ul>
         </div>
     </aside>
