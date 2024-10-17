@@ -8,7 +8,8 @@ $dbname = "ecodatabase";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
-if ($conn->connect_error) {
+if ($conn->connect_error)
+{
     die("Connection failed: " . $conn->connect_error);
 }
 
@@ -27,9 +28,11 @@ session_start(); // Start a new PHP session
 $email_error = $address_error = $community_error = $password_error = $general_error = "";
 $error_flag = false; // Flag to check for any errors
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST")
+{
     // Handle Registration
-    if (isset($_POST['register'])) {
+    if (isset($_POST['register']))
+    {
         $fullname = mysqli_real_escape_string($conn, $_POST["fullname"]);
         $email = mysqli_real_escape_string($conn, $_POST["email"]);
         $phone = mysqli_real_escape_string($conn, $_POST["phone"]);
@@ -40,78 +43,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $check_email_query = "SELECT * FROM users WHERE email = '$email'";
         $check_email_result = $conn->query($check_email_query);
 
-        if ($check_email_result->num_rows > 0) {
+        if ($check_email_result->num_rows > 0)
+        {
             $email_error = "Error: This email is already registered.";
             $error_flag = true;
         }
 
-        if (!empty($address)) {
+        if (!empty($address))
+        {
             $check_address_query = "SELECT * FROM users WHERE address = '$address'";
             $check_address_result = $conn->query($check_address_query);
 
-            if ($check_address_result->num_rows > 0) {
+            if ($check_address_result->num_rows > 0)
+            {
                 $address_error = "Error: This address is already in use.";
                 $error_flag = true;
             }
         }
 
         // Detect role based on the name prefix
-        if (strpos($fullname, "ADMIN") === 0) {
+        if (strpos($fullname, "ADMIN") === 0)
+        {
             $role = "ADMIN";
 
             // Admins can create new communities
-            if (!empty($community)) {
+            if (!empty($community))
+            {
                 $check_community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
                 $check_result = $conn->query($check_community_query);
 
-                if ($check_result->num_rows > 0) {
+                if ($check_result->num_rows > 0)
+                {
                     $community_error = "Error: Community already exists.";
                     $error_flag = true;
-                } else {
+                }
+                else
+                {
                     $create_community_query = "INSERT INTO Community (Area) VALUES ('$community')";
-                    if ($conn->query($create_community_query) === TRUE) {
+                    if ($conn->query($create_community_query) === TRUE)
+                    {
                         $community_id = $conn->insert_id;
-                    } else {
+                    }
+                    else
+                    {
                         $general_error = "Error creating community: " . $conn->error;
                         $error_flag = true;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 $community_error = "Admin must create a community.";
                 $error_flag = true;
             }
-        } else {
+        }
+        else
+        {
             $role = "USER";
-            if (!empty($community)) {
+            if (!empty($community))
+            {
                 $community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
                 $community_result = $conn->query($community_query);
 
-                if ($community_result->num_rows > 0) {
+                if ($community_result->num_rows > 0)
+                {
                     $row = $community_result->fetch_assoc();
                     $community_id = $row['Com_Id'];
-                } else {
+                }
+                else
+                {
                     $community_error = "Community not found. You can register without a community.";
                     $community_id = NULL;
                 }
-            } else {
+            }
+            else
+            {
                 $community_id = NULL;
             }
         }
 
-        if (!$error_flag) {
+        if (!$error_flag)
+        {
             // Generate a random password (8 characters with letters, numbers, and symbols)
             $generated_password = bin2hex(random_bytes(4));
-            $hashed_password = password_hash($generated_password, PASSWORD_DEFAULT);
 
             // Insert user details into the users table
             $sql = "INSERT INTO users (name, email, phone, address, role, com_id, password)
-                    VALUES ('$fullname', '$email', '$phone', '$address', '$role'," . ($community_id ? $community_id : "NULL") . ", '$hashed_password')";
+                    VALUES ('$fullname', '$email', '$phone', '$address', '$role'," . ($community_id ? $community_id : "NULL") . ", '$generated_password')";
 
-            if ($conn->query($sql) === TRUE) {
+            if ($conn->query($sql) === TRUE)
+            {
                 // Initialize PHPMailer object
                 $mail = new PHPMailer(true);
 
-                try {
+                try
+                {
                     // Server settings
                     $mail->isSMTP();
                     $mail->Host = 'smtp.gmail.com';  // Set the SMTP server to send through
@@ -132,42 +158,139 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $mail->send();
                     $general_error = "Registration Successful! Check your email for the password.";
-                } catch (Exception $e) {
+                }
+                catch (Exception $e)
+                {
                     $general_error = "Registration successful, but failed to send the email. Error: {$mail->ErrorInfo}";
                 }
-            } else {
+            }
+            else
+            {
                 $general_error = "Error: " . $sql . "<br>" . $conn->error;
             }
-        } else {
+        }
+        else
+        {
             $general_error = "Please fix the errors above and try again.";
         }
     }
+    $login_error = "";  // Initialize login error message
+
 
     // Handle Login
-    if (isset($_POST['login'])) {
+    if (isset($_POST['login']))
+    {
         $email = mysqli_real_escape_string($conn, $_POST["email"]);
         $password = mysqli_real_escape_string($conn, $_POST["password"]);
+        $remember = isset($_POST["remember"]);
 
         // Check if the user exists
         $sql = "SELECT * FROM users WHERE email='$email'";
         $result = $conn->query($sql);
 
-        if ($result->num_rows > 0) {
+        if ($result->num_rows > 0)
+        {
             $row = $result->fetch_assoc();
 
             // Verify password
-            if (password_verify($password, $row['password'])) {
+            if ($password === $row['password'])
+            {
+                // Set cookies before outputting any HTML
+                if ($remember)
+                {
+                    setcookie("email", $email, time() + (86400 * 30), "/");  // Cookie for 30 days
+                    setcookie("password", $password, time() + (86400 * 30), "/");
+                }
+                else
+                {
+                    if (isset($_COOKIE["email"]))
+                    {
+                        setcookie("email", "", time() - 3600, "/");
+                    }
+                    if (isset($_COOKIE["password"]))
+                    {
+                        setcookie("password", "", time() - 3600, "/");
+                    }
+                }
+
+                // Redirect or output success message
                 echo "Login successful!";
                 header('Location: dashboard.php');  // Redirect to dashboard or another page
                 $_SESSION['User_ID'] = $row['User_ID']; // Save the User ID in the session
             } else {
                 echo "Incorrect password!";
             }
-        } else {
-            echo "Account not found. Please register first.";
+            else
+            {
+                $login_error = "Incorrect password!";
+            }
+        }
+        else
+        {
+            $login_error = "Account not found. Please register first.";
         }
     }
+
+    if (isset($_POST['forgot_password']))
+    {
+        $email = mysqli_real_escape_string($conn, $_POST["email"]);
+
+        // Check if the email exists
+        $check_email_query = "SELECT * FROM users WHERE email = '$email'";
+        $check_email_result = $conn->query($check_email_query);
+
+        if ($check_email_result->num_rows > 0)
+        {
+            // Generate a new random password
+            $new_password = bin2hex(random_bytes(4));
+
+            // Update the user's password in the database
+            $update_password_query = "UPDATE users SET password = '$new_password' WHERE email = '$email'";
+            if ($conn->query($update_password_query) === TRUE)
+            {
+                // Send password reset email
+                $mail = new PHPMailer(true);
+                try
+                {
+                    // Server settings
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'yapfongkiat53@gmail.com';
+                    $mail->Password = 'momfaxlauusnbnvl';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+
+                    // Recipients
+                    $mail->setFrom($email, 'Eco Waste System');
+                    $mail->addAddress($email);
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = "Your Password Reset Request";
+                    $mail->Body = "Hello, <br>Your password has been reset. Your new password is: <b>$new_password</b><br>Please log in and change it.";
+
+                    $mail->send();
+                    echo "<script>alert('A new password has been sent to your email.'); window.location.href='login.php';</script>";
+                }
+                catch (Exception $e)
+                {
+                    echo "Failed to send email. Error: {$mail->ErrorInfo}";
+                }
+            }
+            else
+            {
+                echo "Error updating password: " . $conn->error;
+            }
+        }
+        else
+        {
+            echo "<script>alert('Email not found. Please try again.'); window.location.href='login.php';</script>";
+        }
+    }
+
 }
+
 
 $conn->close();
 ?>
@@ -178,7 +301,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/login.css">
+    <link rel="stylesheet" href="../CSS/login.css?v=1.0">
     <title>Recycling Triangle</title>
     <script>
         // Use PHP to output a JavaScript variable that indicates whether the user should stay on the registration form
@@ -205,17 +328,40 @@ $conn->close();
                     <input type="hidden" name="login" value="1"> <!-- Hidden input to indicate login -->
                     <div class="input-group">
                         <label for="email">Your email</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <input type="email" id="email" name="email" placeholder="Enter your email"
+                            value="<?php echo isset($_COOKIE['email']) ? $_COOKIE['email'] : ''; ?>" required>
                     </div>
                     <div class="input-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                            value="<?php echo isset($_COOKIE['password']) ? $_COOKIE['password'] : ''; ?>" required>
                     </div>
                     <div class="options">
-                        <label><input type="checkbox" name="remember"> Remember me</label>
-                        <a href="#" id="forgot-password">Forgot Password?</a>
+                        <label><input type="checkbox" name="remember" <?php echo isset($_COOKIE['email']) ? 'checked' : ''; ?>> Remember me</label>
+                        <a href="#" id="forgot-password" onclick="showForgotPasswordForm()">Forgot Password?</a>
                     </div>
+                    <?php if (!empty($login_error)): ?>
+                        <div class="error-message-login"><?php echo $login_error; ?></div>
+                    <?php endif; ?>
                     <button type="submit" class="btn-signin">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="forgot-password-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Reset Password</h2>
+                <form method="POST" action="login.php">
+                    <input type="hidden" name="forgot_password" value="1">
+                    <!-- Hidden input to indicate registration -->
+                    <div class="input-group">
+                        <label for="reset-email"></label>
+                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn-reset-password">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
