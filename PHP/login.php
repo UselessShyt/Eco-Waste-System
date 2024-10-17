@@ -174,61 +174,119 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     }
     $login_error = "";  // Initialize login error message
 
+
     // Handle Login
-    if ($_SERVER["REQUEST_METHOD"] == "POST")
+    if (isset($_POST['login']))
     {
-        if (isset($_POST['login']))
+        $email = mysqli_real_escape_string($conn, $_POST["email"]);
+        $password = mysqli_real_escape_string($conn, $_POST["password"]);
+        $remember = isset($_POST["remember"]);
+
+        // Check if the user exists
+        $sql = "SELECT * FROM users WHERE email='$email'";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0)
         {
-            $email = mysqli_real_escape_string($conn, $_POST["email"]);
-            $password = mysqli_real_escape_string($conn, $_POST["password"]);
-            $remember = isset($_POST["remember"]);
+            $row = $result->fetch_assoc();
 
-            // Check if the user exists
-            $sql = "SELECT * FROM users WHERE email='$email'";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0)
+            // Verify password
+            if ($password === $row['password'])
             {
-                $row = $result->fetch_assoc();
-
-                // Verify password
-                if ($password === $row['password'])
+                // Set cookies before outputting any HTML
+                if ($remember)
                 {
-                    // Set cookies before outputting any HTML
-                    if ($remember)
-                    {
-                        setcookie("email", $email, time() + (86400 * 30), "/");  // Cookie for 30 days
-                        setcookie("password", $password, time() + (86400 * 30), "/");
-                    }
-                    else
-                    {
-                        if (isset($_COOKIE["email"]))
-                        {
-                            setcookie("email", "", time() - 3600, "/");
-                        }
-                        if (isset($_COOKIE["password"]))
-                        {
-                            setcookie("password", "", time() - 3600, "/");
-                        }
-                    }
-
-                    // Redirect or output success message
-                    echo "Login successful!";
-                    header('Location: template.php');  // Redirect to dashboard or another page
-                    exit();
+                    setcookie("email", $email, time() + (86400 * 30), "/");  // Cookie for 30 days
+                    setcookie("password", $password, time() + (86400 * 30), "/");
                 }
                 else
                 {
-                    $login_error = "Incorrect password!";
+                    if (isset($_COOKIE["email"]))
+                    {
+                        setcookie("email", "", time() - 3600, "/");
+                    }
+                    if (isset($_COOKIE["password"]))
+                    {
+                        setcookie("password", "", time() - 3600, "/");
+                    }
+                }
+
+                // Redirect or output success message
+                echo "Login successful!";
+                header('Location: template.php');  // Redirect to dashboard or another page
+                exit();
+            }
+            else
+            {
+                $login_error = "Incorrect password!";
+            }
+        }
+        else
+        {
+            $login_error = "Account not found. Please register first.";
+        }
+    }
+
+    if (isset($_POST['forgot_password']))
+    {
+        $email = mysqli_real_escape_string($conn, $_POST["email"]);
+
+        // Check if the email exists
+        $check_email_query = "SELECT * FROM users WHERE email = '$email'";
+        $check_email_result = $conn->query($check_email_query);
+
+        if ($check_email_result->num_rows > 0)
+        {
+            // Generate a new random password
+            $new_password = bin2hex(random_bytes(4));
+
+            // Update the user's password in the database
+            $update_password_query = "UPDATE users SET password = '$new_password' WHERE email = '$email'";
+            if ($conn->query($update_password_query) === TRUE)
+            {
+                // Send password reset email
+                $mail = new PHPMailer(true);
+                try
+                {
+                    // Server settings
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'yapfongkiat53@gmail.com';
+                    $mail->Password = 'momfaxlauusnbnvl';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+
+                    // Recipients
+                    $mail->setFrom($email, 'Eco Waste System');
+                    $mail->addAddress($email);
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = "Your Password Reset Request";
+                    $mail->Body = "Hello, <br>Your password has been reset. Your new password is: <b>$new_password</b><br>Please log in and change it.";
+
+                    $mail->send();
+                    echo "<script>alert('A new password has been sent to your email.'); window.location.href='login.php';</script>";
+                }
+                catch (Exception $e)
+                {
+                    echo "Failed to send email. Error: {$mail->ErrorInfo}";
                 }
             }
             else
             {
-                $login_error = "Account not found. Please register first.";
+                echo "Error updating password: " . $conn->error;
             }
         }
+        else
+        {
+            echo "<script>alert('Email not found. Please try again.'); window.location.href='login.php';</script>";
+        }
     }
+
 }
+
 
 $conn->close();
 ?>
@@ -276,12 +334,30 @@ $conn->close();
                     </div>
                     <div class="options">
                         <label><input type="checkbox" name="remember" <?php echo isset($_COOKIE['email']) ? 'checked' : ''; ?>> Remember me</label>
-                        <a href="#" id="forgot-password">Forgot Password?</a>
+                        <a href="#" id="forgot-password" onclick="showForgotPasswordForm()">Forgot Password?</a>
                     </div>
                     <?php if (!empty($login_error)): ?>
                         <div class="error-message-login"><?php echo $login_error; ?></div>
                     <?php endif; ?>
                     <button type="submit" class="btn-signin">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="forgot-password-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Reset Password</h2>
+                <form method="POST" action="login.php">
+                    <input type="hidden" name="forgot_password" value="1">
+                    <!-- Hidden input to indicate registration -->
+                    <div class="input-group">
+                        <label for="reset-email"></label>
+                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn-reset-password">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
