@@ -218,10 +218,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 header('Location: dashboard.php');  // Redirect to dashboard or another page
                 $_SESSION['User_ID'] = $row['User_ID']; // Save the User ID in the session
             } else {
-                echo "Incorrect password!";
-            }
-            else
-            {
                 $login_error = "Incorrect password!";
             }
         }
