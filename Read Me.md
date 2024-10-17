@@ -2,8 +2,6 @@
 
 **Eco Waste System** is a web-based platform designed to manage and optimize waste collection services. This system allows users to schedule pickups, report issues, view history, generate reports, and manage notifications.
 
-![Eco Waste System Dashboard](path_to_image)  <!-- Replace with an actual image link if hosted on GitHub -->
-
 ## Features
 
 - **Schedule Pickups:** Easily schedule waste pickups at your convenience.
