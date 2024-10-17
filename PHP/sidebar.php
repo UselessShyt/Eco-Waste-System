@@ -15,10 +15,10 @@
             <div style="margin-bottom: 50px;">
                 <h3>MAIN MENU</h3>
                 <ul>
-                    <li class="active"><i class="fa fa-home"></i><a href="#" class="nav-link">Dashboard</a></li>
+                    <li class="active"><i class="fa fa-home"></i><a href="dashboard.php" class="nav-link">Dashboard</a></li>
                     <li><i class="fa fa-calendar"></i><a href="#" class="nav-link">Schedule Pickup</a></li>
                     <li><i class="fa fa-clock-o"></i><a href="#" class="nav-link">Pickup History</a></li>
-                    <li><i class='fa fa-pencil'></i><a href="#" class="nav-link">Report Issues</a></li>
+                    <li><i class='fa fa-pencil'></i><a href="Report-Issues.php" class="nav-link">Report Issues</a></li>
                     <li><i class="fa fa-file-pdf-o"></i><a href="#" class="nav-link">Generate Reports</a></li>
                 </ul>
             </div>
@@ -34,7 +34,7 @@
         </div>
         <div>
             <ul>
-                <li><i class="fa fa-sign-out"></i><a href="#">Log Out</a></li>
+                <li><i class="fa fa-sign-out"></i><a href="login.php">Log Out</a></li>
             </ul>
         </div>
     </aside>
