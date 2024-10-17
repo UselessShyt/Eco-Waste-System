@@ -65,7 +65,7 @@ login.addEventListener("click", () => {
 // Guest button keeps rotating (optional)
 guest.addEventListener("click", () => {
     rotatePositionsClockwise(); // 或者 rotatePositionsCounterClockwise();
-    window.location.href = "Guest.html";
+    window.location.href = "../PHP/Guest.php";
 });
 
 function validateForm() {
