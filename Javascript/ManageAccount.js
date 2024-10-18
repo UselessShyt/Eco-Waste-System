@@ -7,9 +7,9 @@ const registerForm = document.getElementById("register-form");
 login.style.pointerEvents = "none";
 
 const positions = {
-    register: { top: '9%', left: '52%', rotate: 60 },
+    register: { top: '-35%', left: '49%', rotate: 57 },
     login: { top: '65%', left: '20%', rotate: 0 },
-    guest: { top: '52.6%', left: '13%', rotate: -60 }
+    guest: { top: '51%', left: '12%', rotate: 301 }
 };
 
 // Indicate the places of button change
@@ -65,4 +65,40 @@ login.addEventListener("click", () => {
 // Guest button keeps rotating (optional)
 guest.addEventListener("click", () => {
     rotatePositionsClockwise(); // 或者 rotatePositionsCounterClockwise();
+    window.location.href = "../PHP/Guest.php";
 });
+
+function validateForm() {
+    const fullName = document.querySelector('input[name="fullname"]').value;
+    const phone = document.querySelector('input[name="phone"]').value;
+
+    // Regex to match only English letters and spaces for full name
+    const fullNameRegex = /^[a-zA-Z\s]+$/;
+    if (!fullNameRegex.test(fullName)) {
+        alert("Full name must contain only letters and spaces.");
+        return false;
+    }
+
+    // Regex to match only digits for phone number
+    const phoneRegex = /^\d+$/;
+    if (!phoneRegex.test(phone)) {
+        alert("Phone number must contain only digits.");
+        return false;
+    }
+
+    return true; // Form is valid
+}
+
+if (typeof showRegisterForm !== 'undefined' && showRegisterForm) {
+    document.getElementById("login-form").classList.remove("active");
+    document.getElementById("register-form").classList.add("active");
+}
+
+function showForgotPasswordForm() {
+    document.getElementById("forgot-password-modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("forgot-password-modal").style.display = "none";
+}
+

@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap');
+
+* {
+    font-family: Roboto, sans-serif;
+}
+
+aside#sidebar {
+    width: 12vw;
+    padding-left: 1.5vw;
+    padding-right: 2vw;
+    padding-top: 1vh;
+    height: 87.5vh;
+    position: fixed;
+    top: 12.5vh;
+    left: 0;
+    border-right: 1px solid #ccc;
+}
+
+aside#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* List item styles */
+aside#sidebar ul li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect applied to the parent <li> */
+aside#sidebar ul li:hover {
+    background-color: #418952;
+}
+
+aside#sidebar ul li:hover a,
+aside#sidebar ul li:hover i {
+    color: white;
+}
+
+/* Link styles */
+aside#sidebar ul li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: rgba(24, 24, 24, 0.795);
+    font-weight: bold;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+/* Icon styles */
+aside#sidebar ul li i {
+    font-size: 20px;
+    margin-right: 10px;
+    color: rgba(24, 24, 24, 0.795);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Active item styles */
+aside#sidebar ul li.active i,
+aside#sidebar ul li.active a {
+    color: white;
+}
+
+aside#sidebar ul li.active {
+    background-color: #418952;
+}

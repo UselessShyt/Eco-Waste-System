@@ -1,0 +1,140 @@
+.container {
+    margin-top: 3vh;
+    margin-left: 3vw;
+    margin-right: 3vw;
+    padding-right: 2vw;
+    padding-left: 2vw;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    border-radius: 2em;
+    background-color: #f8f9fa;
+}
+
+#type-c{
+    padding-bottom: 1em;
+    padding-left: 2em;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+#type {
+    height: 2.5em;
+    width: 25em;
+    padding-left: 1em;
+    padding-right: 0.5em;
+}
+
+#type-c label{
+    margin-right: 1.5em;
+}
+
+#details-c {
+    margin-top: 1em;
+    padding-bottom: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+#details-c1{
+    margin-bottom: 1em;
+}
+
+#details-c2 {
+    margin-bottom: 0.5em;
+}
+
+#details-c2 textarea {
+    width: 100%;
+    height: 10em;
+} 
+
+.container form input {
+    width: 150px;
+    height: 30px;
+    background-color: #418952;
+    color: white;
+    padding: 0 20px;
+    border-radius: 5px;    
+    border-width: 0;
+    cursor: pointer;
+}
+
+.reported-issues {
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: white;
+  }
+  
+  .issue {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+  }
+  
+  .issue-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .issue-meta {
+    text-align: right;
+  }
+  
+  .status {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+  }
+  
+  .date {
+    font-size: 12px;
+    color: #888;
+  }
+  
+  #new {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    background-color: #009eff;
+  }
+  
+  #in-progress {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    background-color: #ff9b00;
+  }
+
+  #solved {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #fff;
+    margin-bottom: 5px;
+    background-color: #00a046 ;
+  }
+  
+  .issue-details {
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-top: 10px;
+    border-left: 2px solid #ddd;
+  }
+  
+  .issue.active .issue-details {
+    display: block;
+  }
+  
