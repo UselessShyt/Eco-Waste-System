@@ -34,8 +34,8 @@
             </header>
             <section class="form-section">
                 <div class="tab">
-                    <button class="tablinks active">Schedule Pickup</button>
-                    <button class="tablinks">My Pickups</button>
+                    <button class="tablinks active" id="schedulePickupTab">Schedule Pickup</button>
+                    <button class="tablinks" id="myPickupsTab">My Pickups</button> 
                 </div>
                 <form class="pickup-form">
                     <label for="waste-type">Waste Type</label>
@@ -59,6 +59,23 @@
                     </div>
                 </form>
             </section>
+
+            <section class="pickup-list-section" style="display: none;">
+            <h2>My Pickups</h2>
+            <table class="pickup-table">
+                <thead>
+                    <tr>
+                        <th>Waste Type</th>
+                        <th>Quantity (kg)</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- The pickups will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </section>
         </main>
     </div>
     <script src="schedulePickUp.js" defer></script>

@@ -1,6 +1,6 @@
 <?php 
 session_start();
-$user_id = $_SESSION['User_ID'];
+//$user_id = $_SESSION['User_ID'];
 ?>
 
 <style>
@@ -80,6 +80,12 @@ $user_id = $_SESSION['User_ID'];
             break;
           case 'dashboard.php':
             echo 'Dashboard';
+            break;
+          case 'schedulePickUp.php';
+            echo'Schedule Pick Up';
+            break;
+          default:
+            echo 'Welcome';
             break;
         }
       ?>
