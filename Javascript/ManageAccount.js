@@ -65,7 +65,7 @@ login.addEventListener("click", () => {
 // Guest button keeps rotating (optional)
 guest.addEventListener("click", () => {
     rotatePositionsClockwise(); // 或者 rotatePositionsCounterClockwise();
-    window.location.href = "Guest.html";
+    window.location.href = "../PHP/Guest.php";
 });
 
 function validateForm() {
@@ -94,4 +94,11 @@ if (typeof showRegisterForm !== 'undefined' && showRegisterForm) {
     document.getElementById("register-form").classList.add("active");
 }
 
+function showForgotPasswordForm() {
+    document.getElementById("forgot-password-modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("forgot-password-modal").style.display = "none";
+}
 

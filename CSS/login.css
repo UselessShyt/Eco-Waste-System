@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url(../Image/login_BG.png);
+    background-image: url(../Img/login_BG.png);
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-size: cover;
@@ -165,7 +165,8 @@ body {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px 1px #000000c2;
     font-size: 16px;
 }
 
@@ -203,11 +204,66 @@ p {
     margin-top: 5px;
 }
 
+.error-message-login {
+    color: red;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
 .general-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 40%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button-container{
+    text-align: center;
+}
+
+.btn-reset-password{
+    background-color: #66bb6a;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    box-shadow: 1px 0.3px black;
+}
+
+
 
 
 .btn-signin,
