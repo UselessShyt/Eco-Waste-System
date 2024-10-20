@@ -197,6 +197,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             if ($password === $row['password'])
             {
                 $_SESSION['User_ID'] = $row['User_ID'];
+                $_SESSION['email'] = $email;
+                $_SESSION['fullname'] = $fullname;
 
                 // Set cookies before outputting any HTML
                 if ($remember)
