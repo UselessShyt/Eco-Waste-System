@@ -3,6 +3,14 @@
     include "header.php";
     include "sidebar.php";
     include "../SQL_FILE/database.php";
+
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\SMTP;
+
+    require '../PHPMailer-master/src/Exception.php';
+    require '../PHPMailer-master/src/PHPMailer.php';
+    require '../PHPMailer-master/src/SMTP.php';
 ?>
 <script src="../Javascript/Report-Issues.js"></script>
 
@@ -143,6 +151,9 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $type = $_POST['dropdown'];
   $details = $_POST['details'];
+  $user_id = $_SESSION['User_ID'];
+  $email = $_SESSION['email'];
+  $fullname = $_SESSION['fullname'];
 
   if (empty($type)) {
     echo "<script>alert('Please select Type of Issue');</script>";
@@ -159,6 +170,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       echo "<script>alert('Error reporting issue. Please try again later.');</script>";
     }
   }
+
+    $mail = new PHPMailer(true);
+
+    try
+    {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';  // Set the SMTP server to send through
+        $mail->SMTPAuth = true;
+        $mail->Username = 'yapfongkiat53@gmail.com'; // Your email address
+        $mail->Password = 'momfaxlauusnbnvl';  // Your Gmail app password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom($email, 'Eco Waste System');
+        $mail->addAddress($email);  // Add the recipient
+
+        // Content
+        $mail->isHTML(true);  // Set email format to HTML
+        $mail->Subject = "Notification Of Reported Issue";
+        $mail->Body = "Hello $fullname, the reported issues of '$type' is successfully reported. Please wait for our admin to solve the issue. Thanks";
+
+        $mail->send();
+        $general_error = "Report Successful! Check your email for the password.";
+    }
+    catch (Exception $e)
+    {
+        $general_error = "Report successful, but failed to send the email. Error: {$mail->ErrorInfo}";
+    }
 }
 $conn->close();
 ?>
