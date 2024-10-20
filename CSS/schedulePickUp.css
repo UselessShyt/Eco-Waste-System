@@ -147,3 +147,16 @@
 .tab button:hover {
     background-color: #ddd; /* Hover effect */
 }
+
+
+.success-message {
+    color: #4CAF50; /* Green color for success */
+    font-weight: bold;
+    margin: 15px 0;
+    text-align: center; /* Center the message */
+    font-size: 18px; /* Increase font size */
+    background-color: #e8f5e9; /* Light green background */
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #4CAF50;
+}

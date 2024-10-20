@@ -6,12 +6,12 @@
 
     // Check if form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+        /*
         // Debug: Print the incoming POST data to confirm it's being received
         echo "<pre>";
         print_r($_POST);
         echo "</pre>";
-
+        */
         // Retrieve form data using proper 'name' attributes from the form
         $waste_type = $_POST['waste_type'] ?? null;
         $quantity = $_POST['quantity'] ?? null;
@@ -24,13 +24,13 @@
             echo "Error: All fields are required!";
             exit; // Stop script execution if validation fails
         }
-
+        /*
         // Debug: Print form variables to ensure they're correctly captured
         echo "Waste Type: $waste_type<br>";
         echo "Quantity: $quantity<br>";
         echo "Date: $date<br>";
         echo "Time: $time<br>";
-
+        */
         // Insert data into the database
         $stmt = $conn->prepare("INSERT INTO schedule (`sch-date`, `sch-time`, `waste_type`, `Com_Id`, `sch-quantity`) VALUES (?, ?, ?, ?, ?)");
         
@@ -69,6 +69,10 @@
                 <button class="tablinks" id="myPickupsTab">My Pickups</button>
             </div>
 
+            <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
+                <p class="success-message">Pickup scheduled successfully!</p>
+            <?php endif; ?>
+            
             <!-- Form to schedule pickup -->
             <form class="pickup-form" method="POST" action="">
                 <label for="waste-type">Waste Type</label>
