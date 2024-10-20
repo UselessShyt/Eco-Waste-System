@@ -41,9 +41,11 @@
         // Bind the parameters to the SQL query
         $stmt->bind_param("sssdi", $date, $time, $waste_type, $com_id, $quantity);
         
+        
         // Execute the query
         if ($stmt->execute()) {
-            echo "Pickup scheduled successfully!";
+            echo "<script>alert('Pickup scheduled successfully!');</script>";
+            //echo "Pickup scheduled successfully!";
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -69,10 +71,12 @@
                 <button class="tablinks" id="myPickupsTab">My Pickups</button>
             </div>
 
+            <!-- Success message block -->
             <?php if (isset($_GET['status']) && $_GET['status'] === 'success'): ?>
                 <p class="success-message">Pickup scheduled successfully!</p>
             <?php endif; ?>
-            
+
+
             <!-- Form to schedule pickup -->
             <form class="pickup-form" method="POST" action="">
                 <label for="waste-type">Waste Type</label>

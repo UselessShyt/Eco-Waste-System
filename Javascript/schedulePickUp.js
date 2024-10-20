@@ -36,8 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Form submission event listener
     form.addEventListener('submit', (event) => {
-        //event.preventDefault(); // Prevent form submission for validation
-
+        event.preventDefault(); // Prevent form submission for validation
         if (validateForm()) {
             const formData = {
                 wasteType: wasteType.value,
