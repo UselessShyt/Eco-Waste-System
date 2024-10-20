@@ -19,7 +19,7 @@ include "../SQL_FILE/database.php";
     <div style="margin-left: 14vw;">
         <div class="image-grid">
             <div class="image-item">
-                <div class="img-container"><a href="#schedule-pickup"><img class="image" src="../Img/calander.png" alt="Calendar"></a></div>
+                <div class="img-container"><a href="schedulePickUp.php"><img class="image" src="../Img/calander.png" alt="Calendar"></a></div>
                 <div class="label"><p>Schedule Pickup</p></div>
             </div>
             <div class="image-item">
