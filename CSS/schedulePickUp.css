@@ -1,0 +1,162 @@
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.user-actions a {
+    margin-left: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.user-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Form Section */
+.form-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 3vw; /* Adjust this to ensure no overlap with the sidebar */
+    margin-top: 30px; /* Add space at the top */
+    width: 50vw; /* Adjust the width to prevent it from stretching too far */
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+
+.form-section .tab {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.tablinks {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.tablinks.active {
+    border-bottom: 2px solid #4CAF50;
+}
+
+/* Form Fields */
+.pickup-form label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.pickup-form input,
+.pickup-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px; /* Increased space between fields */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Form Buttons */
+.form-buttons {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    gap: 10px;
+}
+
+.cancel-btn,
+.submit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.cancel-btn {
+    background-color: #ccc;
+    color: white;
+}
+
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #999;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* Ensure the table and form are consistent */
+.pickup-list-section, .form-section {
+    width: 70vw; /* Same width for form and table */
+    margin-left: 14vw;
+}
+
+.pickup-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pickup-table th, .pickup-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tab {
+    margin-bottom: 10px;
+}
+
+.tab button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab button.active {
+    background-color: #4CAF50; /* Active tab button color */
+    color: white;
+}
+
+.tab button:hover {
+    background-color: #ddd; /* Hover effect */
+}
+
+
+.success-message {
+    color: #4CAF50; /* Green color for success */
+    font-weight: bold;
+    margin: 15px 0;
+    text-align: center; /* Center the message */
+    font-size: 18px; /* Increase font size */
+    background-color: #e8f5e9; /* Light green background */
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #4CAF50;
+}

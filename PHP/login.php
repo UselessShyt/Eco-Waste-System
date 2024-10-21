@@ -1,4 +1,7 @@
+
 <?php
+session_start();
+
 //Database connection
 $servername = "localhost";
 $username = "root";
@@ -21,8 +24,6 @@ use PHPMailer\PHPMailer\SMTP;
 require '../PHPMailer-master/src/Exception.php';
 require '../PHPMailer-master/src/PHPMailer.php';
 require '../PHPMailer-master/src/SMTP.php';
-
-session_start(); // Start a new PHP session
 
 // Initialize error messages
 $email_error = $address_error = $community_error = $password_error = $general_error = "";
@@ -195,6 +196,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             // Verify password
             if ($password === $row['password'])
             {
+                $_SESSION['User_ID'] = $row['User_ID'];
+                $_SESSION['email'] = $email;
+                $_SESSION['fullname'] = $fullname;
+                
                 // Set cookies before outputting any HTML
                 if ($remember)
                 {
@@ -214,11 +219,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 }
 
                 // Redirect or output success message
+                
                 echo "Login successful!";
-                header('Location: dashboard.php');  // Redirect to dashboard or another page
-                $_SESSION['User_ID'] = $row['User_ID']; // Save the User ID in the session
-            } else {
-                echo "Incorrect password!";
+                header('Location: dashboard.php'); 
+                exit();
             }
         }
         else
@@ -353,7 +357,8 @@ $conn->close();
                     <!-- Hidden input to indicate registration -->
                     <div class="input-group">
                         <label for="reset-email"></label>
-                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email" required>
+                        <input type="email" id="reset-email" name="email" placeholder="Enter your registered email"
+                            required>
                     </div>
                     <div class="button-container">
                         <button type="submit" class="btn-reset-password">Submit</button>
