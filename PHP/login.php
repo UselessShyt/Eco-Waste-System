@@ -220,10 +220,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             } else {
                 echo "Incorrect password!";
             }
-            else
-            {
-                $login_error = "Incorrect password!";
-            }
         }
         else
         {
