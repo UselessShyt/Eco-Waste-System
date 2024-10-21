@@ -207,7 +207,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `users_schedule`
   ADD PRIMARY KEY (`User_Id`,`Sch_Id`),
-  ADD KEY `US_FK_Sch` (`Sch_Id`);
+
 
 --
 -- 表的索引 `waste`

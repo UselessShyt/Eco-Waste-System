@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.pickup-form');
 
     const wasteType = document.getElementById('waste_type');
-    const quantity = document.getElementById('sch_quantity');
+    const quantity = document.getElementById('quantity');
     const date = document.getElementById('date');
     const time = document.getElementById('time');
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Form submission event listener
     form.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent form submission for validation
+        //event.preventDefault(); // Prevent form submission for validation
         if (validateForm()) {
             const formData = {
                 wasteType: wasteType.value,
@@ -73,14 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
         myPickupsTab.classList.remove('active');
         schedulePickupTab.classList.add('active');
     });
-
+    /*
     // Save pickup data to local storage
     function savePickupData(formData) {
         const pickups = JSON.parse(localStorage.getItem('pickups')) || [];
         pickups.push(formData);
         localStorage.setItem('pickups', JSON.stringify(pickups));
     }
-
+    
     function loadPickups() {
         const pickups = JSON.parse(localStorage.getItem('pickups')) || [];
         pickupTableBody.innerHTML = ''; // Clear the table before loading
@@ -100,5 +100,5 @@ document.addEventListener('DOMContentLoaded', () => {
             pickupTableBody.innerHTML = `<tr><td colspan="4">No pickups scheduled.</td></tr>`;
         }
     }
-
+        */
 });
