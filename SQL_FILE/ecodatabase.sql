@@ -83,13 +83,21 @@ CREATE TABLE `notification` (
 --
 
 CREATE TABLE `schedule` (
-  `Sch_Id` int(11) NOT NULL,
-  `Sch_Date` date NOT NULL,
-  `Sch_Time` time NOT NULL,
-  `Description` varchar(200) DEFAULT NULL,
-  `Waste_Type` varchar(50) NOT NULL,
-  `Com_Id` int(11) NOT NULL
+  `Sch_Id` int(11) NOT NULL AUTO_INCREMENT,
+  `sch-date` date NOT NULL,
+  `sch-time` time NOT NULL,
+  `waste_type` varchar(50) NOT NULL, -- This stores the waste type (general, recycling, hazardous)
+  `Com_Id` int(11) NOT NULL, -- Community ID, assuming this is a foreign key from the community table
+  `sch_quantity` double NOT NULL, -- Corrected quantity to use "double" for decimal values
+  PRIMARY KEY (`Sch_Id`), -- Primary key on Sch_Id
+  KEY `sch-date` (`sch-date`), -- Index on sch-date
+  KEY `sch-time` (`sch-time`), -- Index on sch-time
+  KEY `waste_type` (`waste_type`), -- Index on waste_type for faster queries
+  KEY `Com_Id` (`Com_Id`), -- Index on Com_Id for faster queries
+  CONSTRAINT `Sch_fk_com` FOREIGN KEY (`Com_Id`) REFERENCES `community` (`Com_Id`) ON DELETE CASCADE -- Foreign key constraint
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 -- --------------------------------------------------------
 
@@ -175,11 +183,18 @@ ALTER TABLE `notification`
 --
 -- 表的索引 `schedule`
 --
+
+ALTER TABLE `schedule`
+MODIFY `Sch_Id` INT NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `schedule`
   ADD PRIMARY KEY (`Sch_Id`),
-  ADD KEY `Sch_fk_waste` (`Waste_Type`),
-  ADD KEY `Sch_fk_com` (`Com_Id`);
-
+  ADD KEY `sch-date` (`sch-date`),
+  ADD KEY `sch-time` (`sch-time`),
+  ADD KEY `waste_type` (`waste_type`),
+  ADD KEY `Com_Id` (`Com_Id`),
+  ADD KEY `sch-quantity` (`sch_quantity`);
+  
 --
 -- 表的索引 `users`
 --
@@ -192,7 +207,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `users_schedule`
   ADD PRIMARY KEY (`User_Id`,`Sch_Id`),
-  ADD KEY `US_FK_Sch` (`Sch_Id`);
+
 
 --
 -- 表的索引 `waste`
@@ -242,9 +257,10 @@ ALTER TABLE `notification`
 --
 -- 限制表 `schedule`
 --
+
 ALTER TABLE `schedule`
   ADD CONSTRAINT `Sch_fk_com` FOREIGN KEY (`Com_Id`) REFERENCES `community` (`Com_Id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `Sch_fk_waste` FOREIGN KEY (`Waste_Type`) REFERENCES `waste` (`waste_type`) ON DELETE CASCADE;
+  ADD CONSTRAINT `Sch_fk_waste` FOREIGN KEY (`waste_type`) REFERENCES `waste` (`waste_type`) ON DELETE CASCADE;
 
 --
 -- 限制表 `users`

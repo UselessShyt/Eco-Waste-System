@@ -81,6 +81,12 @@ $user_id = $_SESSION['User_ID'];
           case 'dashboard.php':
             echo 'Dashboard';
             break;
+          case 'schedulePickUp.php';
+            echo'Schedule Pick Up';
+            break;
+          default:
+            echo 'Welcome';
+            break;
         }
       ?>
     </h2>
