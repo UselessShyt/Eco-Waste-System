@@ -102,3 +102,42 @@ function closeModal() {
     document.getElementById("forgot-password-modal").style.display = "none";
 }
 
+// Function to handle role selection (Admin or User)
+function selectRole(role) {
+    const roleInput = document.getElementById('roleInput');
+    const adminBtn = document.getElementById('adminBtn');
+    const userBtn = document.getElementById('userBtn');
+    const communityField = document.getElementById('communityField');
+    const communitySelect = document.getElementById('communitySelect');
+
+    if (role === 'admin') {
+        roleInput.value = 'admin';
+
+        // Set admin button to blue and user button to default style (black & white)
+        adminBtn.style.backgroundColor = '#007bff';  // Bootstrap blue color
+        adminBtn.style.color = '#fff';               // White text
+        userBtn.style.backgroundColor = '#f8f9fa';   // Light grey background
+        userBtn.style.color = '#000';                // Black text
+
+        // Show community input for admin and hide for user
+        communityField.style.display = 'block';      // Show input for admin
+        communitySelect.style.display = 'none';      // Hide select for user
+        communityField.required = true;              // Make the input required for admin
+        communitySelect.required = false;            // Disable required for select box
+    } else {
+        roleInput.value = 'user';
+
+        // Set user button to blue and admin button to default style (black & white)
+        userBtn.style.backgroundColor = '#007bff';   // Bootstrap blue color
+        userBtn.style.color = '#fff';                // White text
+        adminBtn.style.backgroundColor = '#f8f9fa';  // Light grey background
+        adminBtn.style.color = '#000';               // Black text
+
+        // Show community select for user and hide for admin
+        communityField.style.display = 'none';       // Hide input for user
+        communitySelect.style.display = 'block';     // Show select for user
+        communityField.required = false;             // Disable required for admin input
+        communitySelect.required = true;             // Make the select box required for user
+    }
+}
+

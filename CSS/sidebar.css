@@ -14,6 +14,7 @@ aside#sidebar {
     top: 12.5vh;
     left: 0;
     border-right: 1px solid #ccc;
+    z-index: 1;
 }
 
 aside#sidebar ul {

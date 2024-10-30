@@ -15,55 +15,44 @@
             <div style="margin-bottom: 50px;">
                 <h3>MAIN MENU</h3>
                 <ul>
-                    <li><i class="fa fa-home"></i><a href="dashboard.php" class="nav-link">Dashboard</a></li>
-                    <li><i class="fa fa-calendar"></i><a href="schedulePickUp.php" class="nav-link">Schedule Pickup</a></li>
-                    <li><i class="fa fa-clock-o"></i><a href="pickup-history.php" class="nav-link">Pickup History</a></li>
-                    <li><i class='fa fa-pencil'></i><a href="Report-Issues.php" class="nav-link">Report Issues</a></li>
-                    <li><i class="fa fa-file-pdf-o"></i><a href="generate-reports.php" class="nav-link">Generate Reports</a></li>
+                    <li class="active"><i class="fa fa-home"></i><a href="#" class="nav-link">Dashboard</a></li>
+                    <li><i class="fa fa-calendar"></i><a href="#" class="nav-link">Schedule Pickup</a></li>
+                    <li><i class="fa fa-clock-o"></i><a href="#" class="nav-link">Pickup History</a></li>
+                    <li><i class='fa fa-pencil'></i><a href="#" class="nav-link">Report Issues</a></li>
+                    <li><i class="fa fa-file-pdf-o"></i><a href="#" class="nav-link">Generate Reports</a></li>
                 </ul>
             </div>
             <div>
                 <h3>PREFERENCES</h3>
                 <ul>
-                    <li><i class="fa fa-thumbs-up"></i><a href="preferences.php" class="nav-link">Preferences</a></li>
-                    <li><i class="fa fa-bell"></i><a href="manage-notifications.php" class="nav-link">Manage Notification</a></li>
-                    <li><i class="fa fa-gear"></i><a href="settings.php" class="nav-link">Settings</a></li>
-                    <li><i class="fa fa-question-circle"></i><a href="help-center.php" class="nav-link">Help & Center</a></li>
+                    <li><i class="fa fa-thumbs-up"></i><a href="#" class="nav-link">Preferences</a></li>
+                    <li><i class="fa fa-bell"></i><a href="#" class="nav-link">Manage Notification</a></li>
+                    <li><i class="fa fa-gear"></i><a href="#" class="nav-link">Settings</a></li>
+                    <li><i class="fa fa-question-circle"></i><a href="#" class="nav-link">Help & Center</a></li>
                 </ul>
             </div>
         </div>
         <div>
             <ul>
-                <li><i class="fa fa-sign-out"></i><a href="login.php">Log Out</a></li>
+                <li><i class="fa fa-sign-out"></i><a href="#">Log Out</a></li>
             </ul>
         </div>
     </aside>
-
+    
     <script>
-        // Get all sidebar links with class "nav-link"
+        // Get all links with class "nav-link"
         const links = document.querySelectorAll('.nav-link');
 
-        // Get the current page URL path (just the filename part)
-        const currentPath = window.location.pathname.split('/').pop();
-
-        // Loop through each link and check if its href matches the current path
+        // Loop through the links and add a click event listener
         links.forEach(link => {
-            const linkPath = link.getAttribute('href').split('/').pop(); // Get just the filename part of the href
-
-            // If the link's href matches the current path, add the active class
-            if (linkPath === currentPath) {
-                link.parentElement.classList.add('active'); // Add 'active' class to the <li> containing the link
-            }
-
-            // Add click event listener to update active class on click
             link.addEventListener('click', function () {
-                // Remove active class from all menu items
-                links.forEach(l => l.parentElement.classList.remove('active'));
-                // Add active class to the clicked item
-                link.parentElement.classList.add('active');
+                // Remove "active" class from all li elements
+                document.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+
+                // Add "active" class to the clicked li element
+                this.parentElement.classList.add('active');
             });
         });
+
     </script>
 </body>
-
-</html>

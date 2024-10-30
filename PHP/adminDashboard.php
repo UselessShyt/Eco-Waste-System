@@ -9,40 +9,46 @@ if (!isset($_SESSION['User_ID']))
     exit();
 }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST')
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    $user_id = $_POST['user_id'];
+    $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Check if the new password matches the confirmation password
+    if ($new_password === $confirm_password)
     {
-        $user_id = $_POST['user_id'];
-        $new_password = $_POST['new_password'];
-        $confirm_password = $_POST['confirm_password'];
+        // Update the password and is_password_changed in one query
+        $sql = "UPDATE users SET password = ?, is_password_changed = 1 WHERE User_ID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('si', $new_password, $user_id); // Bind the new password and user ID
 
-        // Check if the new password matches the confirmation password
-        if ($new_password === $confirm_password)
+        if ($stmt->execute())
         {
-            // Update the password and is_password_changed in one query
-            $sql = "UPDATE users SET password = ?, is_password_changed = 1 WHERE User_ID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('si', $new_password, $user_id); // Bind the new password and user ID
-
-            if ($stmt->execute())
-            {
-                // On success, remove the session variable and redirect
-                unset($_SESSION['force_password_change']);
-                $_SESSION['password_change_success'] = true; // Set success flag
-            }
-            else
-            {
-                echo "Error updating password.";
-            }
+            // On success, remove the session variable and redirect
+            unset($_SESSION['force_password_change']);
+            $_SESSION['password_change_success'] = true; // Set success flag
         }
         else
         {
-            echo "Passwords do not match.";
+            echo "Error updating password.";
         }
     }
-    ?>
+    else
+    {
+        echo "Passwords do not match.";
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    .label p {
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
 
 <head>
     <meta charset="UTF-8">
@@ -50,12 +56,55 @@ if (!isset($_SESSION['User_ID']))
     <link rel="stylesheet" href="../CSS/dashboard.css">
     <title>Document</title>
 </head>
+<style>
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 30%;
+        margin: auto;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
 
 <body style="margin: 0;">
     <div style="margin-left: 14vw;">
         <div class="image-grid">
             <div class="image-item">
-                <div class="img-container"><a href="schedulePickUp.php"><img class="image" src="../Img/calander.png"
+                <div class="img-container"><a href="adminFunction.php"><img class="image" src="../Img/Admin.png"
+                            alt="Calendar"></a></div>
+                <div class="label">
+                    <p>Admin Page</p>
+                </div>
+            </div>
+            <div class="image-item">
+                <div class="img-container"><a href="schedule-pickup.php"><img class="image" src="../Img/calander.png"
                             alt="Calendar"></a></div>
                 <div class="label">
                     <p>Schedule Pickup</p>
@@ -98,8 +147,6 @@ if (!isset($_SESSION['User_ID']))
             </div>
         </div>
     </div>
-
-    <!-- Force password change modal -->
     <?php if (isset($_SESSION['force_password_change']) && $_SESSION['force_password_change']): ?>
         <div id="force-password-change-modal" class="modal">
             <div class="modal-content">
@@ -109,7 +156,7 @@ if (!isset($_SESSION['User_ID']))
                     <p style="color: red;"><?php echo $_SESSION['password_change_error']; ?></p>
                 <?php endif; ?>
 
-                <form method="POST" action="dashboard.php">
+                <form method="POST" action="adminDashboard.php">
                     <input type="hidden" name="user_id" value="<?php echo $_SESSION['User_ID']; ?>">
                     <div class="input-group">
                         <label for="new_password">New Password</label>
