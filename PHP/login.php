@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -38,23 +37,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         $email = mysqli_real_escape_string($conn, $_POST["email"]);
         $phone = mysqli_real_escape_string($conn, $_POST["phone"]);
         $address = mysqli_real_escape_string($conn, $_POST["address"]);
-        $community = mysqli_real_escape_string($conn, $_POST["community"]);
+        $community_id = isset($_POST['communitySelect']) ? (int)$_POST["communitySelect"] : NULL;
+        $error_flag = false;
 
         // Check if email already exists
         $check_email_query = "SELECT * FROM users WHERE email = '$email'";
         $check_email_result = $conn->query($check_email_query);
-
         if ($check_email_result->num_rows > 0)
         {
             $email_error = "Error: This email is already registered.";
             $error_flag = true;
         }
 
+        // Check if address already exists if provided
         if (!empty($address))
         {
             $check_address_query = "SELECT * FROM users WHERE address = '$address'";
             $check_address_result = $conn->query($check_address_query);
-
             if ($check_address_result->num_rows > 0)
             {
                 $address_error = "Error: This address is already in use.";
@@ -62,78 +61,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             }
         }
 
-        // Detect role based on the name prefix
         if (strpos($fullname, "ADMIN") === 0)
         {
             $role = "ADMIN";
-
-            // Admins can create new communities
-            if (!empty($community))
-            {
-                $check_community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
-                $check_result = $conn->query($check_community_query);
-
-                if ($check_result->num_rows > 0)
-                {
-                    $community_error = "Error: Community already exists.";
-                    $error_flag = true;
-                }
-                else
-                {
-                    $create_community_query = "INSERT INTO Community (Area) VALUES ('$community')";
-                    if ($conn->query($create_community_query) === TRUE)
-                    {
-                        $community_id = $conn->insert_id;
-                    }
-                    else
-                    {
-                        $general_error = "Error creating community: " . $conn->error;
-                        $error_flag = true;
-                    }
-                }
-            }
-            else
+            $community_name = isset($_POST['community']) ? mysqli_real_escape_string($conn, $_POST['community']) : null;
+            if (empty($community_name))
             {
                 $community_error = "Admin must create a community.";
                 $error_flag = true;
+            }
+            else
+            {
+                $insert_community_query = "INSERT INTO Community (Area) VALUES ('$community_name')";
+                if ($conn->query($insert_community_query) === TRUE)
+                {
+                    $community_id = $conn->insert_id;
+                }
+                else
+                {
+                    $community_error = "Error creating community: " . $conn->error;
+                    $error_flag = true;
+                }
             }
         }
         else
         {
             $role = "USER";
-            if (!empty($community))
+            if ($community_id === NULL)
             {
-                $community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
-                $community_result = $conn->query($community_query);
-
-                if ($community_result->num_rows > 0)
-                {
-                    $row = $community_result->fetch_assoc();
-                    $community_id = $row['Com_Id'];
-                }
-                else
-                {
-                    $community_error = "Community not found. You can register without a community.";
-                    $community_id = NULL;
-                }
-            }
-            else
-            {
-                $community_id = NULL;
+                $community_error = "Please select an existing community or leave unselected.";
+                $error_flag = true;
             }
         }
 
         if (!$error_flag)
         {
-            // Generate a random password (8 characters with letters, numbers, and symbols)
             $generated_password = bin2hex(random_bytes(4));
-
-            // Insert user details into the users table
-            $sql = "INSERT INTO users (name, email, phone, address, role, com_id, password)
-                    VALUES ('$fullname', '$email', '$phone', '$address', '$role'," . ($community_id ? $community_id : "NULL") . ", '$generated_password')";
-
-            if ($conn->query($sql) === TRUE)
+            $stmt = $conn->prepare("INSERT INTO users (name, email, phone, address, role, com_id, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt)
             {
+                $stmt->bind_param("sssssis", $fullname, $email, $phone, $address, $role, $community_id, $generated_password);
+                if ($stmt->execute())
+                {
+                    $user_id = $stmt->insert_id;
+                    if ($role == "ADMIN" && $community_id !== NULL)
+                    {
+                        $update_stmt = $conn->prepare("UPDATE Community SET admin_Id = ? WHERE Com_Id = ?");
+                        if ($update_stmt)
+                        {
+                            $update_stmt->bind_param("ii", $user_id, $community_id);
+                            $update_stmt->execute();
+                        }
+                    }
+                }
+
+
                 // Initialize PHPMailer object
                 $mail = new PHPMailer(true);
 
@@ -141,19 +123,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 {
                     // Server settings
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';  // Set the SMTP server to send through
+                    $mail->Host = 'smtp.gmail.com';
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'yapfongkiat53@gmail.com'; // Your email address
-                    $mail->Password = 'momfaxlauusnbnvl';  // Your Gmail app password
+                    $mail->Username = 'yapfongkiat53@gmail.com';
+                    $mail->Password = 'momfaxlauusnbnvl';
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port = 587;
 
                     // Recipients
                     $mail->setFrom($email, 'Eco Waste System');
-                    $mail->addAddress($email);  // Add the recipient
+                    $mail->addAddress($email);
 
                     // Content
-                    $mail->isHTML(true);  // Set email format to HTML
+                    $mail->isHTML(true);
                     $mail->Subject = "Your Account Password";
                     $mail->Body = "Hello $fullname, your account has been created successfully. Here is your password: $generated_password. Please log in and change it.";
 
@@ -175,7 +157,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             $general_error = "Please fix the errors above and try again.";
         }
     }
-    $login_error = "";  // Initialize login error message
+
+
 
 
     // Handle Login
@@ -198,16 +181,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             {
                 $_SESSION['User_ID'] = $row['User_ID'];
                 $_SESSION['email'] = $email;
-                $_SESSION['fullname'] = $fullname;
-                
-                // Set cookies before outputting any HTML
+                $_SESSION['fullname'] = $row['name'];
+                $_SESSION['role'] = $row['role']; // Store role in session
+
+                // Check if the password has been changed
+                if ($row['is_password_changed'] == 0)
+                {
+                    // Redirect to dashboard with a flag to force password change
+                    $_SESSION['force_password_change'] = true;
+                }
+
+                // Set cookies if 'Remember Me' is checked
                 if ($remember)
                 {
-                    setcookie("email", $email, time() + (86400 * 30), "/");  // Cookie for 30 days
+                    setcookie("email", $email, time() + (86400 * 30), "/");
                     setcookie("password", $password, time() + (86400 * 30), "/");
                 }
                 else
                 {
+                    // Clear cookies if not remembering
                     if (isset($_COOKIE["email"]))
                     {
                         setcookie("email", "", time() - 3600, "/");
@@ -218,15 +210,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                     }
                 }
 
-                // Redirect or output success message
-                
-                echo "Login successful!";
-                header('Location: dashboard.php'); 
-                exit();
+                // Redirect based on role after setting up the session
+                if ($row['role'] === 'ADMIN')
+                {
+                    header('Location: adminDashboard.php');  // Redirect admins to admin dashboard
+                }
+                else
+                {
+                    header('Location: dashboard.php');  // Redirect users to user dashboard
+                }
+                exit(); // Ensure no further output is sent
             }
             else
             {
-                $login_error = "Incorrect password!";
+                $login_error = "Incorrect password. Please try again.";
             }
         }
         else
@@ -245,11 +242,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
         if ($check_email_result->num_rows > 0)
         {
-            // Generate a new random password
-            $new_password = bin2hex(random_bytes(4));
+            $row = $check_email_result->fetch_assoc(); // Fetch the user data
 
-            // Update the user's password in the database
-            $update_password_query = "UPDATE users SET password = '$new_password' WHERE email = '$email'";
+            // Generate a new random password
+            $new_password = bin2hex(random_bytes(4));  // 8-character password (hex encoded)
+
+            // Reset is_password_changed to 0 to enforce password change after login
+            $update_password_query = "UPDATE users 
+                                  SET password = '$new_password', is_password_changed = 0 
+                                  WHERE email = '$email'";
+
             if ($conn->query($update_password_query) === TRUE)
             {
                 // Send password reset email
@@ -275,6 +277,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                     $mail->Body = "Hello, <br>Your password has been reset. Your new password is: <b>$new_password</b><br>Please log in and change it.";
 
                     $mail->send();
+
+                    // Force the user to change password after login
+                    $_SESSION['force_password_change'] = true;
+
                     echo "<script>alert('A new password has been sent to your email.'); window.location.href='login.php';</script>";
                 }
                 catch (Exception $e)
@@ -296,7 +302,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 }
 
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -323,6 +328,7 @@ $conn->close();
 
         <!-- Login Form -->
         <div id="login-form" class="form-container active">
+
             <div class="login-box">
                 <div class="logo">
                     <img src="../Img/logo.png" alt="Eco Waste System Logo">
@@ -376,31 +382,106 @@ $conn->close();
             <h2>Register</h2>
             <form method="POST" action="login.php" onsubmit="return validateForm()">
                 <input type="hidden" name="register" value="1"> <!-- Hidden input to indicate registration -->
-                <div class="input-group">
-                    <input type="text" name="fullname" placeholder="Full Name" required>
+
+                <!-- Role selection -->
+                <div class="input-group role-selection">
+                    <label for="role">Register as:</label>
+                    <div class="role-buttons-container">
+                        <button type="button" id="adminBtn" class="role-btn admin"
+                            onclick="selectRole('admin')">Admin</button>
+                        <button type="button" id="userBtn" class="role-btn user"
+                            onclick="selectRole('user')">User</button>
+                    </div>
+                    <input type="hidden" id="roleInput" name="role" value="user"> <!-- Hidden input for role -->
                 </div>
+
+                <!-- Full Name input -->
+                <div class="input-group">
+                    <input type="text" name="fullname" id="fullname" placeholder="Full Name" required>
+                </div>
+
+                <!-- Email input -->
                 <div class="input-group">
                     <input type="email" name="email" placeholder="Email" required>
                     <span class="error-message"><?php echo $email_error; ?></span> <!-- Display email error -->
                 </div>
+
+                <!-- Phone input -->
                 <div class="input-group">
                     <input type="text" name="phone" placeholder="Phone Number" required>
                 </div>
+
+                <!-- Address input -->
                 <div class="input-group">
                     <input type="text" name="address" placeholder="Address">
                     <span class="error-message"><?php echo $address_error; ?></span> <!-- Display address error -->
                 </div>
+
+                <!-- Community input (changes based on role) -->
                 <div class="input-group">
-                    <input type="text" name="community" placeholder="Community" required>
+                    <label for="communityField" id="communityLabel">Community</label>
+
+                    <!-- Admin community input -->
+                    <input type="text" name="community" id="communityField" placeholder="Enter Community Name"
+                        style="display: none;">
+
+                    <!-- User community select -->
+                    <select name="communitySelect" id="communitySelect">
+                        <option value="">Select a Community</option>
+                        <?php
+                        $query = "SELECT Com_Id, Area FROM community";
+                        $result = mysqli_query($conn, $query);
+                        while ($row = mysqli_fetch_assoc($result))
+                        {
+                            echo '<option value="' . $row['Com_Id'] . '">' . $row['Area'] . '</option>';
+                        }
+                        ?>
+                    </select>
+
                     <span class="error-message"><?php echo $community_error; ?></span> <!-- Display community error -->
                 </div>
-                <button type="submit">Register</button>
+
+                <!-- Submit button -->
+                <button type="submit" class="submit-btn">Register</button>
                 <span class="general-message"><?php echo $general_error; ?></span> <!-- Display general message -->
             </form>
         </div>
-    </div>
 
+        <?php
+        $conn->close();
+        ?>
+
+    </div>
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <p id="generalErrorMessage"></p>
+            <button id="closeModalBtn">OK</button>
+        </div>
+    </div>
 </body>
+
+<script>
+    var generalError = "<?php echo $general_error; ?>";
+
+    // Function to display modal if there is an error
+    if (generalError) {
+        document.getElementById('generalErrorMessage').innerText = generalError;
+        document.getElementById('errorModal').style.display = 'flex';
+    }
+
+    // Function to close modal
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        document.getElementById('errorModal').style.display = 'none';
+    });
+
+    // Close modal if clicking outside the modal content
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('errorModal')) {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+    };
+
+</script>
 <script src="../Javascript/ManageAccount.js?v=1.0"></script>
 
 </html>
