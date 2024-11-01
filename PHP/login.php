@@ -32,162 +32,132 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
     // Handle Registration
     if (isset($_POST['register']))
-{
-    $fullname = mysqli_real_escape_string($conn, $_POST["fullname"]);
-    $email = mysqli_real_escape_string($conn, $_POST["email"]);
-    $phone = mysqli_real_escape_string($conn, $_POST["phone"]);
-    $address = mysqli_real_escape_string($conn, $_POST["address"]);
-    $community = mysqli_real_escape_string($conn, $_POST["community"]);
-
-    $error_flag = false;
-
-    // Check if email already exists
-    $check_email_query = "SELECT * FROM users WHERE email = '$email'";
-    $check_email_result = $conn->query($check_email_query);
-
-    if ($check_email_result->num_rows > 0)
     {
-        $email_error = "Error: This email is already registered.";
-        $error_flag = true;
-    }
+        $fullname = mysqli_real_escape_string($conn, $_POST["fullname"]);
+        $email = mysqli_real_escape_string($conn, $_POST["email"]);
+        $phone = mysqli_real_escape_string($conn, $_POST["phone"]);
+        $address = mysqli_real_escape_string($conn, $_POST["address"]);
+        $community_id = isset($_POST['communitySelect']) ? (int)$_POST["communitySelect"] : NULL;
+        $error_flag = false;
 
-    if (!empty($address))
-    {
-        $check_address_query = "SELECT * FROM users WHERE address = '$address'";
-        $check_address_result = $conn->query($check_address_query);
-
-        if ($check_address_result->num_rows > 0)
+        // Check if email already exists
+        $check_email_query = "SELECT * FROM users WHERE email = '$email'";
+        $check_email_result = $conn->query($check_email_query);
+        if ($check_email_result->num_rows > 0)
         {
-            $address_error = "Error: This address is already in use.";
+            $email_error = "Error: This email is already registered.";
             $error_flag = true;
         }
-    }
 
-    // Detect role based on the name prefix
-    if (strpos($fullname, "ADMIN") === 0)
-    {
-        $role = "ADMIN";
-
-        // Admins must create new communities
-        if (!empty($community))
+        // Check if address already exists if provided
+        if (!empty($address))
         {
-            $check_community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
-            $check_result = $conn->query($check_community_query);
-
-            if ($check_result->num_rows > 0)
+            $check_address_query = "SELECT * FROM users WHERE address = '$address'";
+            $check_address_result = $conn->query($check_address_query);
+            if ($check_address_result->num_rows > 0)
             {
-                $community_error = "Error: Community already exists.";
+                $address_error = "Error: This address is already in use.";
+                $error_flag = true;
+            }
+        }
+
+        if (strpos($fullname, "ADMIN") === 0)
+        {
+            $role = "ADMIN";
+            $community_name = isset($_POST['community']) ? mysqli_real_escape_string($conn, $_POST['community']) : null;
+            if (empty($community_name))
+            {
+                $community_error = "Admin must create a community.";
                 $error_flag = true;
             }
             else
             {
-                // Create the new community without setting the admin_id yet
-                $create_community_query = "INSERT INTO Community (Area) VALUES ('$community')";
-                if ($conn->query($create_community_query) === TRUE)
+                $insert_community_query = "INSERT INTO Community (Area) VALUES ('$community_name')";
+                if ($conn->query($insert_community_query) === TRUE)
                 {
-                    $community_id = $conn->insert_id; // Retrieve new community ID
+                    $community_id = $conn->insert_id;
                 }
                 else
                 {
-                    $general_error = "Error creating community: " . $conn->error;
+                    $community_error = "Error creating community: " . $conn->error;
                     $error_flag = true;
                 }
             }
         }
         else
         {
-            $community_error = "Admin must create a community.";
-            $error_flag = true;
-        }
-    }
-    else
-    {
-        $role = "USER";
-        if (!empty($community))
-        {
-            $community_query = "SELECT Com_Id FROM Community WHERE Area = '$community'";
-            $community_result = $conn->query($community_query);
-
-            if ($community_result->num_rows > 0)
+            $role = "USER";
+            if ($community_id === NULL)
             {
-                $row = $community_result->fetch_assoc();
-                $community_id = $row['Com_Id'];
+                $community_error = "Please select an existing community or leave unselected.";
+                $error_flag = true;
+            }
+        }
+
+        if (!$error_flag)
+        {
+            $generated_password = bin2hex(random_bytes(4));
+            $stmt = $conn->prepare("INSERT INTO users (name, email, phone, address, role, com_id, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt)
+            {
+                $stmt->bind_param("sssssis", $fullname, $email, $phone, $address, $role, $community_id, $generated_password);
+                if ($stmt->execute())
+                {
+                    $user_id = $stmt->insert_id;
+                    if ($role == "ADMIN" && $community_id !== NULL)
+                    {
+                        $update_stmt = $conn->prepare("UPDATE Community SET admin_Id = ? WHERE Com_Id = ?");
+                        if ($update_stmt)
+                        {
+                            $update_stmt->bind_param("ii", $user_id, $community_id);
+                            $update_stmt->execute();
+                        }
+                    }
+                }
+
+
+                // Initialize PHPMailer object
+                $mail = new PHPMailer(true);
+
+                try
+                {
+                    // Server settings
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'yapfongkiat53@gmail.com';
+                    $mail->Password = 'momfaxlauusnbnvl';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+
+                    // Recipients
+                    $mail->setFrom($email, 'Eco Waste System');
+                    $mail->addAddress($email);
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = "Your Account Password";
+                    $mail->Body = "Hello $fullname, your account has been created successfully. Here is your password: $generated_password. Please log in and change it.";
+
+                    $mail->send();
+                    $general_error = "Registration Successful! Check your email for the password.";
+                }
+                catch (Exception $e)
+                {
+                    $general_error = "Registration successful, but failed to send the email. Error: {$mail->ErrorInfo}";
+                }
             }
             else
             {
-                $community_error = "Community not found. You can register without a community.";
-                $community_id = NULL;
+                $general_error = "Error: " . $sql . "<br>" . $conn->error;
             }
         }
         else
         {
-            $community_id = NULL;
+            $general_error = "Please fix the errors above and try again.";
         }
     }
 
-    if (!$error_flag)
-    {
-        // Generate a random password (8 characters with letters, numbers, and symbols)
-        $generated_password = bin2hex(random_bytes(4));
-
-        // Insert user details into the users table
-        $sql = "INSERT INTO users (name, email, phone, address, role, com_id, password)
-                VALUES ('$fullname', '$email', '$phone', '$address', '$role'," . ($community_id ? $community_id : "NULL") . ", '$generated_password')";
-
-        if ($conn->query($sql) === TRUE)
-        {
-            $user_id = $conn->insert_id; // Get the new user's ID
-
-            // If the user is an admin, update the Community table with the admin ID
-            if ($role == "ADMIN" && isset($community_id))
-            {
-                $update_community_query = "UPDATE Community SET admin_Id = '$user_id' WHERE Com_Id = '$community_id'";
-                if (!$conn->query($update_community_query)) {
-                    $general_error = "Error updating community with admin ID: " . $conn->error;
-                }
-            }
-
-            // Initialize PHPMailer object
-            $mail = new PHPMailer(true);
-
-            try
-            {
-                // Server settings
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'yapfongkiat53@gmail.com';
-                $mail->Password = 'momfaxlauusnbnvl';
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-
-                // Recipients
-                $mail->setFrom($email, 'Eco Waste System');
-                $mail->addAddress($email);
-
-                // Content
-                $mail->isHTML(true);
-                $mail->Subject = "Your Account Password";
-                $mail->Body = "Hello $fullname, your account has been created successfully. Here is your password: $generated_password. Please log in and change it.";
-
-                $mail->send();
-                $general_error = "Registration Successful! Check your email for the password.";
-            }
-            catch (Exception $e)
-            {
-                $general_error = "Registration successful, but failed to send the email. Error: {$mail->ErrorInfo}";
-            }
-        }
-        else
-        {
-            $general_error = "Error: " . $sql . "<br>" . $conn->error;
-        }
-    }
-    else
-    {
-        $general_error = "Please fix the errors above and try again.";
-    }
-}
 
 
 
@@ -447,28 +417,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                     <span class="error-message"><?php echo $address_error; ?></span> <!-- Display address error -->
                 </div>
 
-                <!-- Community input (will change based on role) -->
+                <!-- Community input (changes based on role) -->
                 <div class="input-group">
                     <label for="communityField" id="communityLabel">Community</label>
 
                     <!-- Admin community input -->
-                    <input type="text" name="community" id="communityField" placeholder="Enter Community Name">
+                    <input type="text" name="community" id="communityField" placeholder="Enter Community Name"
+                        style="display: none;">
 
                     <!-- User community select -->
-                    <select name="communitySelect" id="communitySelect" style="display: none;">
+                    <select name="communitySelect" id="communitySelect">
                         <option value="">Select a Community</option>
                         <?php
-                        // Fetch the list of communities from the database
-                        $query = "SELECT Area FROM community"; // Replace 'communities' with your table name
+                        $query = "SELECT Com_Id, Area FROM community";
                         $result = mysqli_query($conn, $query);
-
-                        // Populate the dropdown
                         while ($row = mysqli_fetch_assoc($result))
                         {
-                            echo '<option value="' . $row['Area'] . '">' . $row['Area'] . '</option>';
+                            echo '<option value="' . $row['Com_Id'] . '">' . $row['Area'] . '</option>';
                         }
                         ?>
                     </select>
+
                     <span class="error-message"><?php echo $community_error; ?></span> <!-- Display community error -->
                 </div>
 
@@ -476,8 +445,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                 <button type="submit" class="submit-btn">Register</button>
                 <span class="general-message"><?php echo $general_error; ?></span> <!-- Display general message -->
             </form>
-
         </div>
+
         <?php
         $conn->close();
         ?>
@@ -511,6 +480,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
             document.getElementById('errorModal').style.display = 'none';
         }
     };
+
 </script>
 <script src="../Javascript/ManageAccount.js?v=1.0"></script>
 
