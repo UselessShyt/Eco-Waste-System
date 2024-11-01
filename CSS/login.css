@@ -197,6 +197,7 @@ p {
     height: 25px;
     text-align: center;
 }
+
 .error-message {
     color: red;
     font-size: 12px;
@@ -244,17 +245,18 @@ p {
     font-weight: bold;
 }
 
-.close:hover, .close:focus {
+.close:hover,
+.close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 
-.button-container{
+.button-container {
     text-align: center;
 }
 
-.btn-reset-password{
+.btn-reset-password {
     background-color: #66bb6a;
     padding: 10px;
     border-radius: 10px;
@@ -320,3 +322,277 @@ footer {
         display: none;
     }
 }
+
+.form-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+/* Input group styles */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group input,
+.input-group select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.input-group select {
+    display: block;
+    appearance: none;
+    background-color: white;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;base64,...');
+    /* Custom arrow image */
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+}
+
+/* Role selection container */
+.role-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* Flexbox layout for role buttons */
+.role-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.role-btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Admin button styling */
+.role-btn.admin {
+    background-color: #28a745;
+    color: white;
+}
+
+.role-btn.admin:hover {
+    background-color: #218838;
+}
+
+/* User button styling */
+.role-btn.user {
+    background-color: #007bff;
+    color: white;
+}
+
+.role-btn.user:hover {
+    background-color: #0056b3;
+}
+
+/* Submit button styling */
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Improved select box appearance */
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;base64,...');
+    /* Optional custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+select:focus {
+    border-color: #007bff;
+}
+
+.form-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+/* Input group styles */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group input,
+.input-group select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.input-group select {
+    display: block;
+    appearance: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Role selection container */
+.role-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* Flexbox layout for role buttons container */
+.role-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.role-btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Admin button styling */
+.role-btn.admin {
+    background-color: #28a745;
+    color: white;
+}
+
+.role-btn.admin:hover {
+    background-color: #218838;
+}
+
+/* User button styling */
+.role-btn.user {
+    background-color: #007bff;
+    color: white;
+}
+
+.role-btn.user:hover {
+    background-color: #0056b3;
+}
+
+/* Submit button styling */
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* General Button Styling */
+.role-btn {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+/* Default Button Styles */
+.admin {
+    background-color: #007bff; /* Initial blue color for Admin */
+    color: #fff;
+}
+
+.user {
+    background-color: #f8f9fa; /* Initial grey/white color for User */
+    color: #000;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 50%;
+    text-align: center;
+}
+
+.modal .modal-content button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.model .modal-content button:hover {
+    background-color: #45a049;
+}
+
+/* When Active, this is handled by JS */
