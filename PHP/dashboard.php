@@ -76,7 +76,7 @@ if (!isset($_SESSION['User_ID']))
                 </div>
             </div>
             <div class="image-item">
-                <div class="img-container"><a href="#view-history"><img class="image" src="../Img/history.png"
+                <div class="img-container"><a href="view-Pickup-History.php"><img class="image" src="../Img/history.png"
                             alt="History"></a></div>
                 <div class="label">
                     <p>View History</p>
