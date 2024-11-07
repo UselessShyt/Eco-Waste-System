@@ -12,7 +12,7 @@
     require '../PHPMailer-master/src/PHPMailer.php';
     require '../PHPMailer-master/src/SMTP.php';
 ?>
-<script src="../Javascript/Report-Issues.js"></script>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,11 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Issues</title>
     <link rel="stylesheet" href="../CSS/Report-Issues.css">
-    <script>
-        if ( window.history.replaceState ) {
-            window.history.replaceState( null, null, window.location.href );
-        }
-    </script>
+    <script src="../Javascript/Report-Issues.js"></script>
 </head>
 <body style="margin: 0;">
     <div style="margin-left: 14vw;">
