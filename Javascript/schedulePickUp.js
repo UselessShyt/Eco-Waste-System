@@ -73,32 +73,4 @@ document.addEventListener('DOMContentLoaded', () => {
         myPickupsTab.classList.remove('active');
         schedulePickupTab.classList.add('active');
     });
-    /*
-    // Save pickup data to local storage
-    function savePickupData(formData) {
-        const pickups = JSON.parse(localStorage.getItem('pickups')) || [];
-        pickups.push(formData);
-        localStorage.setItem('pickups', JSON.stringify(pickups));
-    }
-    
-    function loadPickups() {
-        const pickups = JSON.parse(localStorage.getItem('pickups')) || [];
-        pickupTableBody.innerHTML = ''; // Clear the table before loading
-    
-        if (pickups.length > 0) {
-            pickups.forEach(pickup => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${pickup.wasteType}</td>
-                    <td>${pickup.quantity}</td>
-                    <td>${pickup.date}</td>
-                    <td>${pickup.time}</td>
-                `;
-                pickupTableBody.appendChild(row);
-            });
-        } else {
-            pickupTableBody.innerHTML = `<tr><td colspan="4">No pickups scheduled.</td></tr>`;
-        }
-    }
-        */
 });
