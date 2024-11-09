@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date = $_POST['pickup_date'];
     $time = $_POST['pickup_time'];
 
-    // Insert the selected date and time into the schedule database 
+
     $query = "INSERT INTO schedule (`Com_Id`, `sch-date`, `sch-time`) 
               VALUES ('$community_id', '$date', '$time')";
     
