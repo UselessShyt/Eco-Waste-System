@@ -1,14 +1,13 @@
 .container {
-    width: 50%;
     margin: 5vh;
     background-color: #f8f9fa;
     padding: 2.5vh;
     border-radius: 2em;
     height: 67.5vh;
-}
-
-.container1{
-    height: 50%;
+    align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container2 {
@@ -25,6 +24,6 @@
 .container3 {
     margin-top: auto;
     display: flex;
-    justify-content: center; /* Optional: Center the button horizontally */
-    align-items: flex-end; /* Align button to the bottom */
+    justify-content: center;
+    align-items: flex-end;
 }

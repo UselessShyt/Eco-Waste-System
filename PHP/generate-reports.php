@@ -16,7 +16,7 @@ include "../SQL_FILE/database.php";
 </head>
 <body style="margin: 0;">
     <div style="margin-left: 15vw; display: flex;">
-        <div class="container">
+        <div class="container" style="width:25%;">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="generate-report">
                 <div class="container2">
                     <label class="label" for="report_type">Select Report Type:&nbsp;</label>
@@ -45,10 +45,8 @@ include "../SQL_FILE/database.php";
                 </div>
             </form>
         </div>
-        <div class="container">
-            <div class="container1">
-                <canvas id="chart"></canvas>
-            </div>
+        <div class="container" style="width:75%;">
+            <canvas id="chart"></canvas>
         </div>
     </div>
     <script src="../Javascript/generate-reports.js"></script>
@@ -56,6 +54,9 @@ include "../SQL_FILE/database.php";
 </html>
 
 <?php
+$labels = [];
+$values = [];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $report_type = $_POST['report_type'];
     $start_date = $_POST['start_date'];
@@ -124,49 +125,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql .= " GROUP BY us.waste_type";
     }
     
-
     if (!empty($sql)) {
         $result = $conn->query($sql);
-        $response = array();
 
         if ($result->num_rows > 0) {
-            $labels = [];
-            $values = [];
-
             while ($row = $result->fetch_assoc()) {
                 if ($report_type == "issues_reported") {
                     $labels[] = $row['issue_type'];
-                    } else {
+                    $values[] = $row['issue_count'];
+                } else {
                     $labels[] = $row['waste_type'];
+                    $values[] = $row['total_quantity'];
                 }
-                $values[] = $row['total_quantity'] ?? $row['issue_count'];
             }
 
-            $response['success'] = true;
-            if (($values[0]) == "0") {
+            if (empty($values)) {
                 echo "<script>alert('There is no data.');</script>";
             }
-            $response['chartData'] = [
-                'labels' => $labels,
-                'values' => $values
-            ];
         } else {
-            $response['success'] = false;
             echo "<script>alert('There is no data.');</script>";
         }
-
-        echo json_encode($response);
     }
 }
 ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const labels = <?php echo json_encode($labels); ?>;
+    const values = <?php echo json_encode($values); ?>;
+
     const chartData = {
-        labels: <?php echo json_encode($labels ?? []); ?>,
+        labels: labels,
         datasets: [{
             label: 'Quantity',
-            data: <?php echo json_encode($values ?? []); ?>,
+            data: values,
             backgroundColor: '#36A2EB',
             borderColor: '#2a7bbd',
             borderWidth: 1
