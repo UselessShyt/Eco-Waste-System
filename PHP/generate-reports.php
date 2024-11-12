@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         datasets: [{
             label: 'Quantity',
             data: values,
-            backgroundColor: '#36A2EB',
+            backgroundColor: '#4CAF50',
             borderColor: '#2a7bbd',
             borderWidth: 1
         }]
