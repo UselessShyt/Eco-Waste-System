@@ -68,54 +68,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('Please select a report type before generating the report.');</script>";
         exit;
     } elseif ($report_type == 'pickup_statistics') {
-        $sql = "SELECT waste_type, SUM('sch-quantity') AS total_quantity
-                FROM schedule";
-
+        $sql = "SELECT us.waste_type, SUM(us.sch_quantity) AS total_quantity
+                FROM users_schedule us
+                JOIN schedule s ON us.Sch_Id = s.Sch_Id";
+        
         $conditions = [];
         if (!empty($start_date) && !empty($end_date)) {
-            $conditions[] = "'sch-date' BETWEEN '$start_date' AND '$end_date'";
+            $conditions[] = "s.`sch-date` BETWEEN '$start_date' AND '$end_date'";
         }
         if (!empty($area)) {
-            $conditions[] = "Com_Id IN (SELECT Com_Id FROM community WHERE Area = '$area')";
+            $conditions[] = "s.Com_Id IN (SELECT Com_Id FROM community WHERE Area = '$area')";
         }
-
+    
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-
-        $sql .= " GROUP BY waste_type";
+    
+        $sql .= " GROUP BY us.waste_type";
     } elseif ($report_type == 'issues_reported') {
-        $sql = "SELECT issue_type, COUNT(*) AS issue_count
-                FROM issue";
-
+        $sql = "SELECT i.issue_type, COUNT(*) AS issue_count
+                FROM issue i";
+    
         $conditions = [];
         if (!empty($start_date) && !empty($end_date)) {
-            $conditions[] = "issue_date BETWEEN '$start_date' AND '$end_date'";
+            $conditions[] = "i.issue_Date BETWEEN '$start_date' AND '$end_date'";
         }
         if (!empty($area)) {
-            $conditions[] = "user_id IN (SELECT User_ID FROM users WHERE com_id IN (SELECT Com_Id FROM community WHERE Area = '$area'))";
+            $conditions[] = "i.user_id IN (SELECT User_ID FROM users WHERE com_id IN (SELECT Com_Id FROM community WHERE Area = '$area'))";
         }
-
+    
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-
-        $sql .= " GROUP BY issue_type";
+    
+        $sql .= " GROUP BY i.issue_type";
     } elseif ($report_type == 'recycling_rates') {
-        $sql = "SELECT waste_type, SUM('sch-quantity') AS total_quantity
-                FROM schedule";
-
+        $sql = "SELECT us.waste_type, SUM(us.sch_quantity) AS total_quantity
+                FROM users_schedule us
+                JOIN schedule s ON us.Sch_Id = s.Sch_Id
+                JOIN waste w ON us.waste_type = w.waste_type
+                WHERE w.waste_type = 'Recycling'";
+        
         $conditions = [];
         if (!empty($start_date) && !empty($end_date)) {
-            $conditions[] = "'sch-date' BETWEEN '$start_date' AND '$end_date'";
+            $conditions[] = "s.`sch-date` BETWEEN '$start_date' AND '$end_date'";
         }
-
+        if (!empty($area)) {
+            $conditions[] = "s.Com_Id IN (SELECT Com_Id FROM community WHERE Area = '$area')";
+        }
+    
         if (!empty($conditions)) {
-            $sql .= " WHERE " . implode(" AND ", $conditions);
+            $sql .= " AND " . implode(" AND ", $conditions);
         }
-
-        $sql .= " GROUP BY waste_type";
+    
+        $sql .= " GROUP BY us.waste_type";
     }
+    
 
     if (!empty($sql)) {
         $result = $conn->query($sql);
