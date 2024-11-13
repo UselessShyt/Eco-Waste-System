@@ -32,7 +32,7 @@ include "../SQL_FILE/database.php";
                 <div class="label"><p>Add Schedule</p></div>
             </div>
             <div class="image-item">
-                <div class="img-container"><a href="Report-Issues.php"><img class="image" src="../Img/notification.png" alt="Issue"></a></div>
+                <div class="img-container"><a href="addNotification.php"><img class="image" src="../Img/notification.png" alt="Issue"></a></div>
                 <div class="label"><p>Add Notification</p></div>
             </div>
             <div class="image-item">
