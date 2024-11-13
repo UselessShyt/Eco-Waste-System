@@ -85,6 +85,8 @@ $user_id = $_SESSION['User_ID'];
           case 'schedulePickUp.php';
             echo'Schedule Pick Up';
             break;
+          case 'manageNotification.php';
+            echo'Manage Notification';
           default:
             echo 'Welcome';
             break;

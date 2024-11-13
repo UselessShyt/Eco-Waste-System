@@ -26,7 +26,7 @@
                 <h3>PREFERENCES</h3>
                 <ul>
                     <li><i class="fa fa-thumbs-up"></i><a href="preferences.php" class="nav-link">Preferences</a></li>
-                    <li><i class="fa fa-bell"></i><a href="manage-notifications.php" class="nav-link">Manage Notification</a></li>
+                    <li><i class="fa fa-bell"></i><a href="manageNotifications.php" class="nav-link">Manage Notification</a></li>
                     <li><i class="fa fa-gear"></i><a href="settings.php" class="nav-link">Settings</a></li>
                     <li><i class="fa fa-question-circle"></i><a href="help-center.php" class="nav-link">Help & Center</a></li>
                 </ul>
