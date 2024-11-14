@@ -69,28 +69,7 @@
     border-radius: 10px;
 }
 
-/* Upcoming Pickups table styling */
-.upcoming-pickups-table {
-    width: 100%;
-    border-collapse: collapse;
-}
 
-.upcoming-pickups-table tr {
-    border-bottom: 1px solid #ddd;
-}
-
-.upcoming-pickups-table td {
-    padding: 10px;
-    vertical-align: middle;
-}
-
-.pickup-type {
-    background-color: transparent;
-    color: inherit;
-    padding: 0;
-    font-weight: normal;
-    text-align: left;
-}
 
 /* Date and time styling */
 .pickup-date-time {
@@ -99,16 +78,7 @@
     width: 50%;
 }
 
-/* Status badge styling */
-.status-badge {
-    background-color: #ffe0b3;
-    color: #ff8c00;
-    padding: 5px 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: bold;
-    width: 25%;
-}
+
 
 /* Notification History list styling */
 .notification-history {
@@ -135,11 +105,6 @@
     font-size: 0.9em;
 }
 
-.notification-history .status-label.delivered {
-    background-color: #d1f5d3;
-    color: #27ae60;
-}
-
 /* Center-aligning the Save Preferences button */
 .submit {
     margin-top: 20px;
@@ -155,51 +120,4 @@
     display: inline-block;
     width: auto; /* Ensures button doesn't stretch */
     margin-left: auto; /* Aligns button to the right */
-}   
-
-/* Toggle switch styling */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-    margin-left: 10px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 24px;
-    transition: 0.4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.4s;
-}
-
-input:checked + .slider {
-    background-color: #4caf50; /* Green background when checked */
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px); /* Moves the toggle to the right when checked */
 }

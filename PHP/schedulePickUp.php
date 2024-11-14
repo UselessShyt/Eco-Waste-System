@@ -155,10 +155,10 @@ $schedule_result = $conn->query($schedule_query);
                     <!-- Waste Type Dropdown -->
                     <label for="waste_type">Waste Type</label>
                     <select id="waste_type" name="waste_type" required>
-                        <option value="general">General</option>
-                        <option value="recycling">Recycling</option>
-                        <option value="hazardous">Hazardous</option>
-                        <option value="others">Others</option>
+                        <option value="General">General</option>
+                        <option value="Recycling">Recycling</option>
+                        <option value="Hazardous">Hazardous</option>
+                        <option value="Others">Others</option>
                     </select>
 
                     <label for="quantity">Quantity (kg)</label>

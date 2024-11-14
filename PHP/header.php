@@ -87,6 +87,7 @@ $user_id = $_SESSION['User_ID'];
             break;
           case 'manageNotification.php';
             echo'Manage Notification';
+            break; 
           default:
             echo 'Welcome';
             break;
