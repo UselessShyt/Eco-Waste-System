@@ -189,7 +189,7 @@ table, th, td {
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6'>No records found for user ID " . htmlspecialchars($current_user_id) . "</td></tr>";
+                            echo "<tr><td colspan='6'>No records found". "</td></tr>";
                         }
 
                         // Close the statement
