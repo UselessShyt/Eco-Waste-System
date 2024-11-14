@@ -1,6 +1,7 @@
 <?php 
 session_start();
 $user_id = $_SESSION['User_ID'];
+$user_role = $_SESSION['role'] ?? null; // Get user role from session
 ?>
 
 <style>
@@ -26,15 +27,15 @@ $user_id = $_SESSION['User_ID'];
   }
 
   .logo {
-      display: flex;
-      align-items: center;
+    display: flex;
+    align-items: center;
   }
 
   .logo img {
     height: 7.5vh;
   }
 
-  .title{
+  .title {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -42,7 +43,7 @@ $user_id = $_SESSION['User_ID'];
     padding-right: 1vw;
   }
 
-  .title h1{
+  .title h1 {
     padding: 1vh;
     color: #418952;
   }
@@ -57,17 +58,18 @@ $user_id = $_SESSION['User_ID'];
     color: #666;
   }
 
-  .user-actions a img{
-      height: 5vh;
+  .user-actions a img {
+    height: 5vh;
   }
 </style>
 
 <header>
   <link rel="icon" href="../img/logo.ico">
   <div class="logo">
-    <div>
-        <img src="../img/logo.png" alt="Eco Waste System logo">
-    </div>
+    <!-- Wrap logo with a dynamic link -->
+    <a href="<?= $user_role === 'ADMIN' ? 'adminDashboard.php' : 'dashboard.php'; ?>">
+      <img src="../img/logo.png" alt="Eco Waste System logo">
+    </a>
     <div class="title">
       <h1>Eco Waste System</h1>
     </div>
@@ -75,15 +77,15 @@ $user_id = $_SESSION['User_ID'];
   <div>
     <h2>
       <?php
-        switch ($filename){
+        switch ($filename) {
           case 'Report-Issues.php':
-            echo'Report Issue';
+            echo 'Report Issue';
             break;
           case 'dashboard.php':
             echo 'Dashboard';
             break;
-          case 'schedulePickUp.php';
-            echo'Schedule Pick Up';
+          case 'schedulePickUp.php':
+            echo 'Schedule Pick Up';
             break;
           case 'manageNotification.php';
             echo'Manage Notification';

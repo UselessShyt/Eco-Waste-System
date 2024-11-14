@@ -1,3 +1,9 @@
+<?php
+// Start session to access user role
+
+// Get user role from session
+$user_role = $_SESSION['role'] ?? null; // Get user role from session
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,9 +21,15 @@
             <div style="margin-bottom: 50px;">
                 <h3>MAIN MENU</h3>
                 <ul>
-                    <li><i class="fa fa-home"></i><a href="dashboard.php" class="nav-link">Dashboard</a></li>
+                    <!-- Dynamically set the dashboard link based on user role -->
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="<?= $user_role === 'ADMIN' ? 'adminDashboard.php' : 'dashboard.php'; ?>" class="nav-link">
+                            Dashboard
+                        </a>
+                    </li>
                     <li><i class="fa fa-calendar"></i><a href="schedulePickUp.php" class="nav-link">Schedule Pickup</a></li>
-                    <li><i class="fa fa-clock-o"></i><a href="pickup-history.php" class="nav-link">Pickup History</a></li>
+                    <li><i class="fa fa-clock-o"></i><a href="view-Pickup-History.php" class="nav-link">Pickup History</a></li>
                     <li><i class='fa fa-pencil'></i><a href="Report-Issues.php" class="nav-link">Report Issues</a></li>
                     <li><i class="fa fa-file-pdf-o"></i><a href="generate-reports.php" class="nav-link">Generate Reports</a></li>
                 </ul>
