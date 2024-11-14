@@ -87,6 +87,8 @@ $user_role = $_SESSION['role'] ?? null; // Get user role from session
           case 'schedulePickUp.php':
             echo 'Schedule Pick Up';
             break;
+          case 'manageNotification.php';
+            echo'Manage Notification';
           default:
             echo 'Welcome';
             break;

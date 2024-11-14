@@ -69,7 +69,7 @@ if (!isset($_SESSION['User_ID']))
                 </div>
             </div>
             <div class="image-item">
-                <div class="img-container"><a href="#notifications"><img class="image" src="../Img/notification_1.png"
+                <div class="img-container"><a href="manageNotification.php"><img class="image" src="../Img/notification_1.png"
                             alt="Notification"></a></div>
                 <div class="label">
                     <p>Notifications</p>
