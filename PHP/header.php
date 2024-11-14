@@ -89,6 +89,7 @@ $user_role = $_SESSION['role'] ?? null; // Get user role from session
             break;
           case 'manageNotification.php';
             echo'Manage Notification';
+            break; 
           default:
             echo 'Welcome';
             break;
