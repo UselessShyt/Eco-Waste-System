@@ -1,173 +1,115 @@
 <?php
-    //session_start();
-    $filename = basename(__FILE__);
-    include "header.php";
-    include "sidebar.php";
-    include "../SQL_FILE/database.php";
+//session_start();
+$filename = basename(__FILE__);
+include "header.php";
+include "sidebar.php";
+include "../SQL_FILE/database.php";
 
-    // Enable error reporting for debugging
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    // Assume user_id is stored in session
-    $user_id = $_SESSION['User_ID'] ?? null;
-    if (!$user_id) {
-        echo "Error: User not logged in.";
-        exit;
-    }
+// Assume user_id is stored in session
+$user_id = $_SESSION['User_ID'] ?? null;
+if (!$user_id) {
+    echo "Error: User not logged in.";
+    exit;
+}
 
-    // Set notification threshold (e.g., 24 hours before the pickup)
-    $time_threshold = date("Y-m-d H:i:s", strtotime('+24 hours'));
+// Check if user has existing notification preferences
+$check_preferences_query = "SELECT 1 FROM preferences WHERE user_id = ?";
+$check_preferences_stmt = $conn->prepare($check_preferences_query);
+$check_preferences_stmt->bind_param("i", $user_id);
+$check_preferences_stmt->execute();
+$has_preferences = $check_preferences_stmt->get_result()->num_rows > 0;
 
-    // Query to find upcoming pickups within 24 hours for users who opted for reminders
-    $upcoming_pickups_query = "
-        SELECT u.user_id, u.email, s.`sch-date` AS pickup_date, s.`sch-time` AS pickup_time, us.waste_type
-        FROM users u
-        JOIN users_schedule us ON u.user_id = us.user_id
-        JOIN schedule s ON us.Sch_Id = s.Sch_Id
-        JOIN preferences p ON u.user_id = p.user_id
-        WHERE s.`sch-date` = CURDATE() + INTERVAL 1 DAY 
-        AND p.pickup_reminders = 1
-        AND NOT EXISTS (
-            SELECT 1 FROM notification_timely nh
-            WHERE nh.user_id = u.user_id
-                AND nh.pickup_date = s.`sch-date`
-                AND nh.pickup_time = s.`sch-time`
-        )
+// If no preferences exist, set defaults (off/0 for all notifications)
+if (!$has_preferences) {
+    $default_preferences_query = "INSERT INTO preferences (user_id, pickup_reminders, unscheduled_notifications) VALUES (?, 0, 0)";
+    $default_preferences_stmt = $conn->prepare($default_preferences_query);
+    $default_preferences_stmt->bind_param("i", $user_id);
+    $default_preferences_stmt->execute();
+}
+
+// Load existing notification preferences
+$preferences_query = "SELECT pickup_reminders, unscheduled_notifications FROM preferences WHERE user_id = ?";
+$preferences_stmt = $conn->prepare($preferences_query);
+$preferences_stmt->bind_param("i", $user_id);
+$preferences_stmt->execute();
+$preferences_result = $preferences_stmt->get_result();
+$preferences = $preferences_result->fetch_assoc();
+
+// Set the initial values for the toggle switches
+$pickup_reminders = $preferences['pickup_reminders'] ?? 0;
+$unscheduled_notifications = $preferences['unscheduled_notifications'] ?? 0;
+
+// Save updated preferences if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Set the values based on whether the checkboxes are checked
+    $pickup_reminders = isset($_POST['pickup_reminders']) ? 1 : 0;
+    $unscheduled_notifications = isset($_POST['unscheduled_notifications']) ? 1 : 0;
+
+    // Update preferences in the database
+    $update_query = "
+        INSERT INTO preferences (user_id, pickup_reminders, unscheduled_notifications)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            pickup_reminders = VALUES(pickup_reminders),
+            unscheduled_notifications = VALUES(unscheduled_notifications)
     ";
+    $update_stmt = $conn->prepare($update_query);
+    $update_stmt->bind_param("iii", $user_id, $pickup_reminders, $unscheduled_notifications);
+    $update_stmt->execute();
 
-    // Execute query
-    $upcoming_pickups_result = $conn->query($upcoming_pickups_query);
+    // Set session variable for alert
+    $_SESSION['preferences_saved'] = true;
+}
 
-    while ($pickup = $upcoming_pickups_result->fetch_assoc()) {
-        $user_id = $pickup['user_id'];
-        $email = $pickup['email'];
-        $pickup_date = $pickup['pickup_date'];
-        $pickup_time = $pickup['pickup_time'];
-        $waste_type = $pickup['waste_type'];
+// Display alert if preferences were saved
+if (isset($_SESSION['preferences_saved'])) {
+    echo "<script>alert('Notification Preferences saved!');</script>";
+    unset($_SESSION['preferences_saved']); // Clear the session variable after showing alert
+}
 
-        // Send notification (e.g., via email or logging for testing)
-        echo "Notification for User ID: $user_id - Upcoming $waste_type pickup on $pickup_date at $pickup_time<br>";
-        
-        // Record this notification in notification_timely to avoid duplicates
-            $record_query = "
-            INSERT INTO notification_timely (user_id, pickup_date, pickup_time, status)
-            VALUES (?, ?, ?, 'Sent')
-        ";
-        $stmt = $conn->prepare($record_query);
-        $stmt->bind_param("iss", $user_id, $pickup_date, $pickup_time);
-        $stmt->execute();
+// Fetch Upcoming Pickups for the user
+$upcoming_pickups_query = "
+    SELECT s.`sch-date` AS pickup_date, s.`sch-time` AS pickup_time, us.waste_type
+    FROM schedule s
+    JOIN users_schedule us ON s.Sch_Id = us.Sch_Id
+    WHERE us.user_id = ? AND s.`sch-date` >= CURDATE()
+    ORDER BY s.`sch-date`, s.`sch-time`
+";
+$upcoming_pickups_stmt = $conn->prepare($upcoming_pickups_query);
+$upcoming_pickups_stmt->bind_param("i", $user_id);
+$upcoming_pickups_stmt->execute();
+$upcoming_pickups = $upcoming_pickups_stmt->get_result();
 
-        // Log after insertion
-        error_log("Inserted notification for user: $user_id on $pickup_date at $pickup_time");
-    }
-
-    // Load existing notification preferences
-    $preferences_query = "SELECT pickup_reminders, unscheduled_notifications FROM preferences WHERE user_id = ?";
-    $preferences_stmt = $conn->prepare($preferences_query);
-    $preferences_stmt->bind_param("i", $user_id);
-    $preferences_stmt->execute();
-    $preferences_result = $preferences_stmt->get_result();
-    $preferences = $preferences_result->fetch_assoc();
-
-    // Set the initial values for the toggle switches
-    $pickup_reminders = $preferences['pickup_reminders'] ?? 0;
-    $unscheduled_notifications = $preferences['unscheduled_notifications'] ?? 0;
-
-    // Save updated preferences if form is submitted
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        
-        // Set the values based on whether the checkboxes are checked
-        $pickup_reminders = isset($_POST['pickup_reminders']) ? 1 : 0;
-        $unscheduled_notifications = isset($_POST['unscheduled_notifications']) ? 1 : 0;
-    
-        // Update preferences in the database
-        $update_query = "
-            INSERT INTO preferences (user_id, pickup_reminders, unscheduled_notifications)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
-                pickup_reminders = VALUES(pickup_reminders),
-                unscheduled_notifications = VALUES(unscheduled_notifications)
-        ";
-        $update_stmt = $conn->prepare($update_query);
-        $update_stmt->bind_param("iii", $user_id, $pickup_reminders, $unscheduled_notifications);
-        $update_stmt->execute();
-    
-        // Set session variable for alert
-        $_SESSION['preferences_saved'] = true;
-    }
-    
-    // Display alert if preferences were saved
-    if (isset($_SESSION['preferences_saved'])) {
-        echo "<script>alert('Notification Preferences saved!');</script>";
-        unset($_SESSION['preferences_saved']); // Clear the session variable after showing alert
-    }
-
-    // Set a time threshold for notifications (e.g., 24 hours for reminders)
-    $time_threshold = date("Y-m-d H:i:s", strtotime('+24 hours'));
-
-    // Fetch Upcoming Pickups for the user
-    $upcoming_pickups_query = "
-        SELECT s.`sch-date` AS pickup_date, s.`sch-time` AS pickup_time, us.waste_type
-        FROM schedule s
-        JOIN users_schedule us ON s.Sch_Id = us.Sch_Id
-        WHERE us.user_id = ? AND s.`sch-date` >= CURDATE()
-        ORDER BY s.`sch-date`, s.`sch-time`
-    ";
-
-    $upcoming_pickups_stmt = $conn->prepare($upcoming_pickups_query);
-    $upcoming_pickups_stmt->bind_param("i", $user_id);
-    $upcoming_pickups_stmt->execute();
-    $upcoming_pickups = $upcoming_pickups_stmt->get_result();
-
-    // Fetch the user's community ID if not already set
-    $com_id = $_SESSION['Com_Id'] ?? null;
-
-    if (!$com_id) {
-        // Fetch com_id from the database
-        $stmt = $conn->prepare("SELECT Com_Id FROM users WHERE User_ID = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $stmt->bind_result($com_id);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Store com_id in session for future use
-        $_SESSION['Com_Id'] = $com_id;
-    }
-
-    // Fetch Notification History for the user's community
-    $notification_history_query = "SELECT Title, Message, notice_date, notice_time, status FROM notification WHERE com_id = ? ORDER BY notice_date DESC";
-    $notification_stmt = $conn->prepare($notification_history_query);
-    $notification_stmt->bind_param("i", $com_id);
-    $notification_stmt->execute();
-    $notification_history = $notification_stmt->get_result();
-
-    if (!$notification_history) {
-        echo "Error fetching notifications: " . $conn->error;
-        exit;
-    }
-
-    // Update status to 'Delivered' for notifications where the scheduled time has passed
-    $current_datetime = date("Y-m-d H:i:s");
-
-    $update_status_query = "
-        UPDATE notification
-        SET status = 'Delivered'
-        WHERE status = 'Pending'
-        AND CONCAT(notice_date, ' ', notice_time) <= ?
-    ";
-
-    $stmt = $conn->prepare($update_status_query);
-    $stmt->bind_param("s", $current_datetime);
+// Fetch Notification History for the user's community
+$com_id = $_SESSION['Com_Id'] ?? null;
+if (!$com_id) {
+    // Fetch com_id from the database
+    $stmt = $conn->prepare("SELECT Com_Id FROM users WHERE User_ID = ?");
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
+    $stmt->bind_result($com_id);
+    $stmt->fetch();
+    $stmt->close();
 
-    // Log the result (optional)
-    if ($stmt->affected_rows > 0) {
-        error_log("Updated status to 'Delivered' for " . $stmt->affected_rows . " notifications.");
-    }
+    // Store com_id in session for future use
+    $_SESSION['Com_Id'] = $com_id;
+}
 
+$notification_history_query = "SELECT Title, Message, notice_date, notice_time, status FROM notification WHERE com_id = ? ORDER BY notice_date DESC";
+$notification_stmt = $conn->prepare($notification_history_query);
+$notification_stmt->bind_param("i", $com_id);
+$notification_stmt->execute();
+$notification_history = $notification_stmt->get_result();
+
+if (!$notification_history) {
+    echo "Error fetching notifications: " . $conn->error;
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -177,98 +119,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Notifications</title>
     <link rel="stylesheet" href="../CSS/manageNotification.css">
-
     <style>
-        /* Aligning columns */
-        .pickup-date-time{
-            text-align: center; /* Center aligns the date and time */
-            padding-right: 20px; /* Adds some space to the right */
-            font-size: 1.0em ;
-        }
-
-        /* Upcoming Pickups table styling */
-        .upcoming-pickups-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .upcoming-pickups-table tr {
-            border-bottom: 1px solid #ddd;
-        }
-
-        .upcoming-pickups-table td {
-            padding: 10px;
-            vertical-align: middle;
-        }
-
-        /* Optional: Add width to the table columns for more spacing */
-        .upcoming-pickups-table td,
-        .notification-history li {
-            padding: 10px 15px; /* Adds padding for better spacing */
-        }
-
-        .pickup-type {
-            background-color: transparent;
-            color: inherit;
+        /* Container styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
             padding: 0;
-            font-weight: normal;
-            text-align: left;
-            
         }
-
-        /* Status badge styling */
-        .status-badge1 {
-            background-color: #ffe4b3;
-            color: #d35400;
-            float: right;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 0.9em;
-            width: 70px;
-            text-align: center;
-            font-weight: bold;
-            display: inline-block;
-            margin: 8px; 
-        }
-
-        /* Column styling */
-        .pickup-type1, .title {
-            width: 300px; /* Adjust width as needed */
+        .container {
+            margin-left: 14vw;
+            padding: 20px;
         }
         
-        .pickup-type1, .notification-message {
-            width: 200px; /* Adjust width as needed */
-
+        /* Section Styling */
+        .notification-section {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .pickup-date-time, .date-time {
-            width: 40%; /* Adjust width as needed */
-            text-align: center;
-            padding-right: 10px;
-
+        .notification-section h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
         }
 
-        /* Aligns the status badge column */
-        .status-column {
-            width: 20%;
-            text-align: right;
-
-        }
-
-        /* Optional: Add width to table columns for better alignment */
-        .upcoming-pickups-table td, .notification-history li {
-            padding: 10px 15px;
-            vertical-align: middle; /* Aligns content vertically */
-        }
-
-        /* Container styling for the preference items */
+        /* Notification Preferences Styling */
         .preference-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid #ddd;
+            font-size: 1.1em;
+            color: #333;
         }
 
         /* Toggle switch styling */
@@ -279,14 +169,12 @@
             height: 24px;
         }
 
-        /* Hide default checkbox */
         .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
 
-        /* Background of the toggle switch */
         .slider {
             position: absolute;
             cursor: pointer;
@@ -299,7 +187,6 @@
             transition: 0.4s;
         }
 
-        /* Circle inside the toggle switch */
         .slider:before {
             position: absolute;
             content: "";
@@ -312,33 +199,118 @@
             transition: 0.4s;
         }
 
-        /* Toggle switch when checked */
         input:checked + .slider {
-            background-color: #4CAF50; /* Green color when active */
+            background-color: #4CAF50;
         }
 
         input:checked + .slider:before {
-            transform: translateX(26px); /* Moves the circle to the right */
+            transform: translateX(26px);
         }
 
-        
+        .submit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
 
-        .notification-item .date-time {
+        .submit:hover {
+            background-color: #45a049;
+        }
+
+        /* Upcoming Pickups Table */
+        .upcoming-pickups-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .upcoming-pickups-table tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .upcoming-pickups-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .upcoming-pickups-table td:first-child {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        /* Notification History Styling */
+        .notification-history {
+            list-style-type: none;
+            padding: 0;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .notification-history li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s;
+        }
+
+        .notification-history li:hover {
+            background-color: #f1f1f1;
+        }
+
+        .notification-history li span {
+            display: block;
+            padding: 0 5px;
+        }
+
+        .notification-history li .title {
+            font-weight: bold;
+            color: #4CAF50;
+            flex: 2;
+        }
+
+        .notification-history li .message {
+            flex: 3;
+        }
+
+        .notification-history li .date-time {
+            flex: 1;
             text-align: center;
-            
+            font-size: 0.9em;
+            color: #777;
         }
 
-        .notification-history .status-label.delivered-label {
-        background-color: #d1f5d3;
-        color: #27ae60; 
-    }
+        /* Status badge styling */
+        .status-badge1 {
+            background-color: #ffe4b3;
+            color: #d35400;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        /* Add some space between sections */
+        .pickup-date-time,
+        .notification-message {
+            font-size: 1em;
+            color: #666;
+        }
+
     </style>
 </head>
-
 <body>
-    <div style="margin-left: 14vw; padding: 20px;">
-        <!-- <h2>Manage Notification</h2>-->
-
+    <div class="container">
         <!-- Notification Preferences Section -->
         <section class="notification-section notification-preferences-section">
             <h3>Notification Preferences</h3>
@@ -364,60 +336,41 @@
         <!-- Upcoming Pickups Section -->
         <section class="notification-section">
             <h3>Upcoming Pickups</h3>
-            <div class="scrollable-content">
-                <table class="upcoming-pickups-table">
-                    <tbody>
-                        <?php if ($upcoming_pickups->num_rows > 0): ?>
-                            <?php while ($pickup = $upcoming_pickups->fetch_assoc()): ?>
-                                <tr>
-                                    <td class="pickup-type1"><?php echo htmlspecialchars($pickup['waste_type']); ?></td>
-                                    <td class="pickup-date-time">
-                                        <?php echo date("jS M, Y - h:i A", strtotime($pickup['pickup_date'] . ' ' . $pickup['pickup_time'])); ?>
-                                    </td>
-                                    <td class="status-badge1">Scheduled</td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
+            <table class="upcoming-pickups-table">
+                <tbody>
+                    <?php if ($upcoming_pickups->num_rows > 0): ?>
+                        <?php while ($pickup = $upcoming_pickups->fetch_assoc()): ?>
                             <tr>
-                                <td colspan="3">No upcoming pickups scheduled.</td>
+                                <td><?php echo htmlspecialchars($pickup['waste_type']); ?></td>
+                                <td><?php echo date("jS M, Y - h:i A", strtotime($pickup['pickup_date'] . ' ' . $pickup['pickup_time'])); ?></td>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="2">No upcoming pickups scheduled.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </section>
 
         <!-- Notification History Section -->
         <section class="notification-section">
             <h3>Notification History</h3>
-            <div class="scrollable-content">
+            <ul class="notification-history">
                 <?php if ($notification_history->num_rows > 0): ?>
-                    <ul class="notification-history">
-                        <?php while ($notification = $notification_history->fetch_assoc()): ?>
-                            <li class="notification-item">
-                                <div class="title"><?php echo htmlspecialchars($notification['Title']); ?></div>
-                                <div class="notification-message"><?php echo htmlspecialchars($notification['Message']); ?></div>
-                                <div class="date-time">
-                                    <?php 
-                                        // Combine date and time if notice_time is available
-                                        $datetime = $notification['notice_date'];
-                                        if (!empty($notification['notice_time'])) {
-                                            $datetime .= ' ' . $notification['notice_time'];
-                                        }
-                                        echo date("jS M, Y - h:i A", strtotime($datetime));
-                                    ?>
-                                </div>
-                                <span class="status-label 
-                                    <?php echo ($notification['status'] === 'Delivered') ? 'delivered-label' : ''; ?>">
-                                    <?php echo htmlspecialchars($notification['status']); ?>
-                                </span>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
+                    <?php while ($notification = $notification_history->fetch_assoc()): ?>
+                        <li>
+                            <span class="title"><?php echo htmlspecialchars($notification['Title']); ?></span>
+                            <span class="message"><?php echo htmlspecialchars($notification['Message']); ?></span>
+                            <span class="date-time"><?php echo date("jS M, Y - h:i A", strtotime($notification['notice_date'] . ' ' . $notification['notice_time'])); ?></span>
+                            <span class="status-badge1"><?php echo htmlspecialchars($notification['status']); ?></span>
+                        </li>
+                    <?php endwhile; ?>
                 <?php else: ?>
-                    <p>No notifications in history.</p>
+                    <p>No notification history available.</p>
                 <?php endif; ?>
-            </div>
+            </ul>
         </section>
     </div>
 </body>
