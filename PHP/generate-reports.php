@@ -20,7 +20,7 @@ include "../SQL_FILE/database.php";
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="generate-report">
                 <div class="container2">
                     <label class="label" for="report_type">Select Report Type:&nbsp;</label>
-                    <select name="report_type" id="report_type" style="padding: 5px;">
+                    <select name="report_type" id="report_type">
                         <option value="select">--Select--</option>
                         <option value="pickup_statistics">Pickup Statistics</option>
                         <option value="issues_reported">Issues Reported</option>
