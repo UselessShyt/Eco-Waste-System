@@ -481,6 +481,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         }
     };
 
+    function showForgotPasswordForm() {
+        document.getElementById('forgot-password-modal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('forgot-password-modal').style.display = 'none';
+    }
+
+
 </script>
 <script src="../Javascript/ManageAccount.js?v=1.0"></script>
 
