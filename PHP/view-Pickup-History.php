@@ -1,5 +1,5 @@
 <?php
-// Start session to access user information
+
 $filename = basename(__FILE__);
 include "header.php";
 include "sidebar.php";
@@ -19,71 +19,102 @@ $current_user_id = $_SESSION['User_ID'] ?? null;
     <link rel="stylesheet" href="view_History.css">
 </head>
 <style>
-    .container {
-        width: 80%;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-family: Arial, sans-serif;
-        font-size: 2em;
-        color: #2f4f2f;
-        font-weight: 600;
-    }
-    #filterInput {
-        width: 80%;
-        padding: 12px;
-        margin-bottom: 20px;
-        margin-left: 10%;
-        font-size: 1em;
-        border: 1px solid #a4c3a2;
-        border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 128, 0, 0.1);
-        outline: none;
-        transition: all 0.3s ease;
-    }
-    #filterInput:focus {
-        border-color: #6a9a6e;
-        box-shadow: 0px 4px 12px rgba(106, 154, 110, 0.2);
-    }
-    table {
-        width: 80%;
-        border-collapse: collapse;
-        margin-left: 10%;
-        margin-bottom: 20px;
-        font-family: Arial, sans-serif;
-        background-color: #ffffff;
-        box-shadow: 0px 4px 12px rgba(0, 128, 0, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    th, td {
-        padding: 15px 10px;
-        font-size: 1em;
-        color: #4b4b4b;
-    }
-    th {
-        background: linear-gradient(135deg, #6a9a6e, #3e7e3e);
-        color: #ffffff;
-        text-align: left;
-        font-weight: bold;
-    }
-    tr:nth-child(even) {
-        background-color: #f2f7f1;
-    }
-    tr:hover {
-        background-color: #e0f0e0;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+/* Center container and add padding */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Title styling */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 2em;
+    color: #2f4f2f;
+    font-weight: 600;
+}
+
+/* Filter Input styling */
+#filterInput {
+    width: 80%;
+    padding: 12px;
+    margin-bottom: 20px;
+    margin-left:10%;
+    font-size: 1em;
+    border: 1px solid #a4c3a2;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 128, 0, 0.1);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#filterInput:focus {
+    border-color: #6a9a6e;
+    box-shadow: 0px 4px 12px rgba(106, 154, 110, 0.2);
+}
+
+/* Table container styling */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-left: 10%;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 12px rgba(0, 128, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Table header styling */
+th {
+    background: linear-gradient(135deg, #6a9a6e, #3e7e3e);
+    color: #ffffff;
+    padding: 15px 10px;
+    text-align: left;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Table row and cell styling */
+td {
+    padding: 15px 10px;
+    font-size: 1em;
+    color: #4b4b4b;
+    border-bottom: 1px solid #e0f0e0;
+}
+
+/* Alternate row colors for a nature-inspired look */
+tr:nth-child(even) {
+    background-color: #f2f7f1;
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Row hover effect with a soft green highlight */
+tr:hover {
+    background-color: #e0f0e0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Optional: Add smooth color transition on rows */
+tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Add some border radius to the table */
+table, th, td {
+    border: none;
+}
 </style>
 
 <body style="margin: 0;">
-    <div style="margin-left: 14vw;">
-
-    <div class="container">
+    <div style="margin-left: 15vw;">
         <h1>Pickup History</h1>
 
         <!-- Filter Input -->
@@ -158,7 +189,7 @@ $current_user_id = $_SESSION['User_ID'] ?? null;
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6'>No completed pickups found. Debugging: Query executed successfully, but no matching records found.</td></tr>";
+                            echo "<tr><td colspan='6'>No records found". "</td></tr>";
                         }
 
                         // Close the statement
@@ -177,30 +208,9 @@ $current_user_id = $_SESSION['User_ID'] ?? null;
                 ?>
             </tbody>
         </table>
-        </div>
     </div>
 
-    <script>
-        // Filter function to search by date, waste type, or community
-        function filterTable() {
-            let input = document.getElementById("filterInput");
-            let filter = input.value.toUpperCase();
-            let table = document.getElementById("pickupHistoryTable");
-            let tr = table.getElementsByTagName("tr");
-
-            for (let i = 1; i < tr.length; i++) {
-                let td = tr[i].getElementsByTagName("td");
-                let showRow = false;
-
-                for (let j = 0; j < td.length; j++) {
-                    if (td[j] && td[j].innerText.toUpperCase().indexOf(filter) > -1) {
-                        showRow = true;
-                    }
-                }
-
-                tr[i].style.display = showRow ? "" : "none";
-            }
-        }
-    </script>
+    <script src="../JavaScript/view_History.js"></script>
 </body>
+
 </html>
