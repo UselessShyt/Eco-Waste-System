@@ -83,17 +83,10 @@ if (!isset($_SESSION['User_ID']))
                 </div>
             </div>
             <div class="image-item">
-                <div class="img-container"><a href="#generate-report"><img class="image" src="../Img/report.png"
+                <div class="img-container"><a href="generate-reports.php"><img class="image" src="../Img/report.png"
                             alt="Report"></a></div>
                 <div class="label">
                     <p>Generate Report</p>
-                </div>
-            </div>
-            <div class="image-item">
-                <div class="img-container"><a href="#Settings"><img class="image" src="../Img/setting_1.png"
-                            alt="Settings"></a></div>
-                <div class="label">
-                    <p>Settings</p>
                 </div>
             </div>
         </div>

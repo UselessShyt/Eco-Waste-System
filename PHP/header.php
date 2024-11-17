@@ -133,8 +133,6 @@ if ($user_id)
         <span class="notification-badge"><?= $notification_count ?></span>
       <?php endif; ?>
     </a>
-    <a href="#"><img src="../img/setting.png" alt="Setting"></a>
-    <a href="#"><img src="../img/profile.png" alt="Profile"></a>
   </nav>
 </header>
 
